@@ -49,31 +49,31 @@ read -p ""
 read -p ""
 printf "\nTask 7: Upload a file to the COS bucket.\n"
 read -p ""
-echo 'RUN CMD: ibmcloud cos object-put -bucket cos-l3-with-retention -key at123-check2.jpg -body ./Downloads/at123-check2.jpg'
+echo 'RUN CMD: ibmcloud cos object-put -bucket cos-l3-with-retention -key at123-check5.jpg -body ./Downloads/at123-check5.jpg'
 read -p ""
-ibmcloud cos object-put -bucket cos-l3-with-retention -key at123-check2.jpg -body ./Downloads/at123-check2.jpg
+ibmcloud cos object-put -bucket cos-l3-with-retention -key at123-check5.jpg -body ./Downloads/at123-check5.jpg
 read -p ""
 
 read -p ""
 printf "\nTask 8: Try uploading the same file again.\n"
 read -p ""
-echo 'RUN CMD: ibmcloud cos object-put -bucket cos-l3-with-retention -key at123-check2.jpg -body ./Downloads/at123-check2.jpg'
+echo 'RUN CMD: ibmcloud cos object-put -bucket cos-l3-with-retention -key at123-check5.jpg -body ./Downloads/at123-check5.jpg'
 read -p ""
-ibmcloud cos object-put -bucket cos-l3-with-retention -key at123-check2.jpg -body ./Downloads/at123-check2.jpg
+ibmcloud cos object-put -bucket cos-l3-with-retention -key at123-check5.jpg -body ./Downloads/at123-check5.jpg
 read -p ""
 
 read -p ""
 printf "\nTask 9: Try to download the object.\n"
 read -p ""
-echo 'RUN CMD: ibmcloud cos object-get -bucket cos-l3-with-retention -key at123-check2.jpg'
+echo 'RUN CMD: ibmcloud cos object-get -bucket cos-l3-with-retention -key at123-check5.jpg'
 read -p ""
-ibmcloud cos object-get -bucket cos-l3-with-retention -key at123-check2.jpg
+ibmcloud cos object-get -bucket cos-l3-with-retention -key at123-check5.jpg
 read -p ""
 
 read -p ""
 printf "\nTask 10: Try to delete the object, enter y when prompted.\n"
 read -p ""
-echo 'RUN CMD: ibmcloud cos object-delete -bucket cos-l3-with-retention -key at123-check2.jpg'
+echo 'RUN CMD: ibmcloud cos object-delete -bucket cos-l3-with-retention -key at123-check5.jpg'
 read -p ""
-ibmcloud cos object-delete -bucket cos-l3-with-retention -key at123-check2.jpg
+ibmcloud cos object-delete -bucket cos-l3-with-retention -key at123-check5.jpg
 read -p ""

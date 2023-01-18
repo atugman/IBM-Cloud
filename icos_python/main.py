@@ -1,3 +1,5 @@
+# Methods below are from IBM Cloud docs: https://cloud.ibm.com/docs/cloud-object-storage?topic=cloud-object-storage-python#python-examples
+
 import ibm_boto3
 from ibm_botocore.client import Config, ClientError
 #from ibm_s3transfer.aspera.manager import AsperaTransferManager

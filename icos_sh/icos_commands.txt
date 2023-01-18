@@ -1,0 +1,31 @@
+For ease of reading, here is a list of commands used in the bash program/demo
+
+Task 1: Set the COS region to us-south.
+ibmcloud cos config region --region "us-south"
+
+Task 2: Retrieve the Cloud Resource Name (CRN) for the COS service instance COS-L3-service.\n
+ibmcloud resource service-instance COS-L3-service -id
+
+Task 3: Set Cloud Resource Name (CRN) for the COS CLI configuration to the COS service instance CRN.\n
+ibmcloud cos config crn -crn `ibmcloud resource service-instance COS-L3-service -id -q | cut -f1 -d' '`
+
+Task 4: Verify CRN and region are set in COS CLI configuration.
+ibmcloud cos config list
+
+Task 5: List all the buckets in the COS service instance.
+ibmcloud cos buckets
+
+Task 6: List the current content of a bucket.
+ibmcloud cos objects -bucket cos-l3-with-retention
+
+Task 7: Upload a file to the COS bucket.
+ibmcloud cos object-put -bucket cos-l3-with-retention -key at123-check3.jpg -body ./Downloads/at123-check3.jpg
+
+Task 8: Try uploading the same file again.
+ibmcloud cos object-put -bucket cos-l3-with-retention -key at123-check3.jpg -body ./Downloads/at123-check3.jpg
+
+Task 9: Try to download the object.
+ibmcloud cos object-get -bucket cos-l3-with-retention -key at123-check3.jpg
+
+Task 10: Try to delete the object, enter y when prompted.
+ibmcloud cos object-delete -bucket cos-l3-with-retention -key at123-check3.jpg

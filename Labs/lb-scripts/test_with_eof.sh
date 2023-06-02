@@ -1,9 +1,28 @@
+#!/bin/bash
+sudo apt -y update
+sudo apt -y install apache2
+cd /var/www/html
+rm index.html
+touch index.html
+hostname > inst_name.txt
+hostname -i > ip.txt
+sed 's/\s.*$//' ip.txt > ip_trimmed.txt
+inst_name=`cat inst_name.txt` # export?
+ip=`cat ip_trimmed.txt`
+echo "<head>
+<title>Load Balancer Lab</title>
+</head>
+<body>
+Traffic is hitting @@inst_name.txt@@ at @@ip_trimmed.txt@@" > index.html
+
+
+cat <<EOF > index.html
 <head>
-    <title>Load Balancer Lab!</title>
-    </head>
-    <body>
-    Traffic is hitting <b>${inst_name}</b> at <b>${ip}!</b>
-    
+<title>Load Balancer Lab</title>
+</head>
+<body>
+Traffic is hitting: <div class="span6">$(<inst_name.txt) at $(<ip_trimmed.txt)</div>
+
     <form action="" id="webForm">
         <h1></h1>
         <input type="text" id="digit" class="form-control" placeholder="Enter a single digit 0-9"><br>
@@ -14,8 +33,6 @@
     <div id="test-div"></div>
 
     <script>
-        
-        document.getElementById("test-div").innerHTML = `The current node is: ${inst_name}`
 
         var checker = sessionStorage.getItem("digit")
 
@@ -34,7 +51,9 @@
         if (digit.value.length > 1) {
             alert("Ensure your input is only a single digit!");
         } else {
-            document.getElementById("my-div").innerHTML = `The current stored value is: ${digit.value}`
+
+        document.getElementById("my-div").innerHTML = `The current stored value is: ${digit.value}`
+
             sessionStorage.setItem("digit", digit.value);
 
             console.log(sessionStorage.getItem("digit"))
@@ -42,5 +61,9 @@
         }
         });
     </script>
-
 </body>
+EOF
+#sed -e '/@@inst_name.txt@@/{inst_name.txt' -e ';d}' inst_name.html
+#sed -e '/@@ip_trimmed.txt@@/{ip_trimmed.txt' -e ';d}' ip.html
+#sed -e '/@@CONTENTS.txt@@/{rCONTENTS.txt' -e ';d}' inst_name.html > index.html
+#sed -e '/@@CONTENTS.txt@@/{rCONTENTS.txt' -e ';d}' ip.html > index.html

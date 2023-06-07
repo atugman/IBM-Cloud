@@ -1,4 +1,5 @@
 #!/bin/bash
+# only works on nodes w/ external connectivity
 sudo apt -y update
 sudo apt -y install apache2
 cd /var/www/html

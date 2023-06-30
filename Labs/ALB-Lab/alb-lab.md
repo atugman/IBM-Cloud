@@ -296,7 +296,7 @@ Within a few moments, you'll find that the load balancer declares all of our ins
 
 And, as you probably suspected, if you try to access the web applicaition, you'll receive a **503 error, indicating that there's no server available to handle your request.**
 
-Before we move onto our next exercise reconfigure the health check correctly - replace the fake path with "/" (excluding the quotation marks) and save the configuration.
+Before we move onto our next exercise, reconfigure the health check correctly - replace the fake path with "/" (excluding the quotation marks) and save the configuration.
 
 ### Simulate an Issue with a Single Node
 
@@ -342,7 +342,7 @@ Complete the following steps from your Instance Group:
 - For Mac users:
 
     ```console
-    ssh -i </path_to_private_key/private_key_name.pem> root@<floating_ip_address>ssh -i </path_to_private_key/private_key_name.pem> root@<floating_ip_address>
+    ssh -i </path_to_private_key/private_key_name.pem> root@<floating_ip_address>
     ```
 - Run the following command from your VSI to initiate the stress test (the stress utility was preinstalled as part of the user data script):
 

@@ -1,22 +1,19 @@
 # Illustrating the Core Functionality of an Application Load Balancer and Instance Groups on IBM Cloud
 
+## Lab Summary and Goals
 
-
-## Introduction
-
-This article serves as a guide to constructing a demonstration of an Application Load Balancer (ALB), illustrating exactly how they work, the motives for using one, and a few interesting experiments. 
-
-Additionally, we'll observe the functionality of an IBM Cloud Instance Group, and illustrate how using one in conjunction with an ALB can help us deliver highly-available and scalable web applications.
-
-ALBs play an important role in how enterprises deliver software (in this case, web-based applications) to their customers. A copious amount of deliberation should be put into validating this kind of architecture, including load balancer configurations, routing algorithms, health checks, persistent storage, etc. Proper consideration and configuration are vital to ensuring applications are fully functional and available to end users.
-
-For a more detailed explanation on load balancing, visit this article from IBM: https://www.ibm.com/topics/load-balancing. 
-
-Depending on your level of experience in the realm of networking, you may find that the experiments in this writeup are fairly rudimentary. The goal is to bring some foundational concepts to life with illustrations while reinforcing concepts vital to application uptime. This writeup should provide exercises appropriate for most experience levels.
-
-We'll start by deploying properly configured VPC infrastructure, including an ALB and instance group.
-
-Then, we'll tamper with the configurations enough to illustrate when and why it might break, why that behavior should or should not be expected, and how to avoid some common pitfalls.
+- Create a VPC
+- Create an ALB
+- Create an Instance Template
+- Create an Instance Group
+- Demonstrate the Core Functionality of an ALB
+- Additional Experiments
+    - IP Stickiness
+    - Session Storage via Web Browser
+    - Misconfigured Health Check
+    - Simulate an issue with a single node
+    - Instance Group Autoscaling
+    - IBM Cloud Monitoring
 
 ## Prerequisites
 
@@ -25,6 +22,22 @@ An IBM Cloud account with Manager or higher permissions for VPC, and Editor or h
 *Use the code VPC1000 for $1,000 in IBM Cloud VPC credits! This will more than cover the cost of the lab, which will only be a nominal expense since we'll destroy the environment afterwards.*
 
 Chrome, Edge, or Firefox are recommended, although Safari may suffice
+
+## Introduction
+
+This article serves as a guide to constructing a demonstration of an Application Load Balancer (ALB), illustrating exactly how they work, the motives for using one, and a few interesting experiments. 
+
+Additionally, we'll observe the functionality of an IBM Cloud Instance Group, and illustrate how using one in conjunction with an ALB can help us deliver highly-available and scalable web applications.
+
+ALBs play an important role in how enterprises deliver software (in this case, web-based applications) to their customers. Organizations typically spend considerable time validating configurations in this type of architecture, including load balancer configurations, routing algorithms, health checks, persistent storage, etc. Proper consideration and configuration are vital to ensuring applications are fully functional and available to end users.
+
+For a more detailed explanation on load balancing, visit this article from IBM: https://www.ibm.com/topics/load-balancing.
+
+Depending on your level of experience in the realm of networking, you may find that the experiments in this writeup are fairly rudimentary. The goal is to bring some foundational concepts to life with illustrations while reinforcing concepts vital to application uptime. This writeup should provide exercises appropriate for most experience levels.
+
+We'll start by deploying properly configured VPC infrastructure, including an ALB and instance group.
+
+Then, we'll tamper with the configurations enough to illustrate when and why it might break, why that behavior should or should not be expected, and how to avoid some common pitfalls.
 
 ## Phase 1 - Create a Virtual Private Cloud (VPC)
 
@@ -156,13 +169,16 @@ Within VPC Infrastructure, create an instance template with the following config
 First, validate that your ALB and its back-end pool and front-end listeners have been successfully created, as shown in the following screenshots.
 
 ![active-alb](./lb-assets/lb-demo.png)
-*Active ALB*
+
+- *Active ALB*
 
 ![demo-backend-pool-healthy](./lb-assets/demo-pool.png)
-*Back-end pool with 3/3 healthy instances attached*
+
+- *Back-end pool with 3/3 healthy instances attached*
 
 ![frontend-listener](./lb-assets/fe-listener.png)
-*Front-end listener, using the HTTP Protocol over Port 80*
+
+- *Front-end listener, using the HTTP Protocol over Port 80*
 
 Once your ALB, back-end pool and front-end listener are in a ready state, create an instance group with the following configurations.
 

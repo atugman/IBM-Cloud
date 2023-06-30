@@ -33,11 +33,8 @@ From the IBM Cloud Portal, create a VPC with the following configurations, most 
 Maintain the default values of the remaining configurations, including:
 
 - Default Security Group: Should remain checked, allowing SSH and PING
-
 - Classic Access: can remain unchecked
-
 - Default address prefixes: should remain checked
-
 - Subnets: Default values, including address spaces should be used
 
 Your VPC should be created within a few moments. **Navigate to your VPC**, then to the **Default Security Group** listed for your VPC.
@@ -140,7 +137,7 @@ Within VPC Infrastructure, create an instance template with the following config
 - Skip the storage sections - the default configuration of a single boot volume will suffice for this lab.
 - In the Networking section, select the VPC you created previously
 - Skip the Network Interfaces section
-- Under Advanced Options, update the user data with the following script: https://github.com/atugman/IBM-Cloud/blob/main/Labs/lb-scripts/lb-user-data.sh
+- Under Advanced Options, update the user data with the following script: https://github.com/atugman/IBM-Cloud/blob/main/Labs/ALB-Lab/lb-user-data.sh
 
 **IMPORTANT**- *ensure you capture the entire script, including the first line:*
 

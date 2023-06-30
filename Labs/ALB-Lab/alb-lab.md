@@ -143,7 +143,7 @@ Within VPC Infrastructure, create an instance template with the following config
 - Otherwise:
     - Generate a new key pair on your machine using the appropriate process for your operating system.
     - For Windows users, follow the steps in this tutorial: https://learn.microsoft.com/en-us/windows/terminal/tutorials/ssh
-    - For Mac users, execute the command ssh-keygen in your terminal, and follow the prompts to create the key pair.
+    - For Mac users, execute the command ```ssh-keygen``` in your terminal, and follow the prompts to create the key pair.
     - Then, copy the contents of your public key file to your clipboard. Mac users can execute the following command in their terminal (after populating with your path and public key name) to output the contents of your public key.
         ```console
         cat <path>/<name_of_pub_key>.pub

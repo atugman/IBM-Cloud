@@ -17,11 +17,13 @@
 
 ## Prerequisites
 
-An IBM Cloud account with Manager or higher permissions for VPC, and Editor or higher level platform permissions
+- An IBM Cloud account with Manager or higher permissions for VPC, and Editor or higher level platform permissions
+    - *Use the code VPC1000 for $1,000 in IBM Cloud VPC credits! This will more than cover the cost of the lab, which will only be a nominal expense since we'll destroy the environment afterwards.*
 
-*Use the code VPC1000 for $1,000 in IBM Cloud VPC credits! This will more than cover the cost of the lab, which will only be a nominal expense since we'll destroy the environment afterwards.*
+- Chrome, Edge, or Firefox are recommended, although Safari may suffice
 
-Chrome, Edge, or Firefox are recommended, although Safari may suffice
+- Some experience with cloud computing and/or networking would be helpful, but this guided lab can be completed by all experience levels
+    - Depending on your level of experience in the realm of networking, you may find that the experiments in this writeup are fairly rudimentary. The goal is to bring some foundational concepts to life with illustrations while reinforcing concepts vital to application uptime. This writeup should provide exercises appropriate for most experience levels.
 
 ## Introduction
 
@@ -32,8 +34,6 @@ Additionally, we'll observe the functionality of an IBM Cloud Instance Group, an
 ALBs play an important role in how enterprises deliver software (in this case, web-based applications) to their customers. Organizations typically spend considerable time validating configurations in this type of architecture, including load balancer configurations, routing algorithms, health checks, persistent storage, etc. Proper consideration and configuration are vital to ensuring applications are fully functional and available to end users.
 
 For a more detailed explanation on load balancing, visit this article from IBM: https://www.ibm.com/topics/load-balancing.
-
-Depending on your level of experience in the realm of networking, you may find that the experiments in this writeup are fairly rudimentary. The goal is to bring some foundational concepts to life with illustrations while reinforcing concepts vital to application uptime. This writeup should provide exercises appropriate for most experience levels.
 
 We'll start by deploying properly configured VPC infrastructure, including an ALB and instance group.
 

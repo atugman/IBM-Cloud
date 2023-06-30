@@ -58,9 +58,51 @@ Next, create a new inbound rule with the following configurations.
 
 **IMPORTANT**: Please note that adding this rule will expose virtual server instances that we create in later exercises to the internet over port 80 (HTML protocol). Please ensure you take the proper precautions. If you borrowed a colleague's VPC for this exercise (instead of creating a new VPC as shown in the steps above), please consider the repercussions and leverage strictly lab environments that do not have connectivity to company resources.
 
+- Protocol: TCP
+- Select "Port Range"
+- Port min: 80
+- Port max: 80
+- Source type: Any
+
 ## Phase 2 - Create the Load Balancer
 
+Within VPC Infrastructure, create a Load Balancer with the following configurations:
 
+- Load balancer type: ALB
+- Region: Same region as your VPC
+- Name: lb-demo
+- Resource Group: Default (others can be used as desired)
+- Virtual Private Cloud: demo-vpc (that you created earlier)
+- Type: Public
+- DNS Type: Public
+- Subnets: Select all three subnets
+
+Create a back-end pool by clicking "Create pool" and enter the following configurations:
+
+*Most of these configurations will be populated by default*
+
+- Name: demo-pool
+- Protocol: HTTP
+- Session stickiness: None
+- Proxy Protocol: Disabled
+- Method: Round Robin
+- Health Check Path: /
+- Health Protocol: HTTP
+- Health Port: Should remain blank
+- Interval, Timeout, and Maximum Retries can retain their default values (5, 2, and 2 respectively)
+
+Create a front-end listener by clicking "Create Listener," and enter the following configurations:
+
+*Most of these configurations will be populated by default*
+
+- Default back-end pool: demo-pool
+- Protocol: HTTP
+- Proxy protocol: should remain unchecked
+- Listener port: 80
+- Max connections: Should remain blank
+- Timeout: Can retain its default value of 50 (seconds)
+
+**Check over your configurations and click "Create" to begin provisioning the load balancer. This process will take a few minutes. While you wait, proceed to phase 3.**
 
 ## Phase 3 - Create an Instance Template
 

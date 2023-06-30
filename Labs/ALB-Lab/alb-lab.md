@@ -17,8 +17,14 @@
 
 ## Prerequisites
 
-- An IBM Cloud account with Manager or higher permissions for VPC, and Editor or higher level platform permissions
-    - *Use the code VPC1000 for $1,000 in IBM Cloud VPC credits! This will more than cover the cost of the lab, which will only be a nominal expense since we'll destroy the environment afterwards.*
+- An IBM Cloud account
+
+- *Use the code VPC1000 for $1,000 in IBM Cloud VPC credits! This will more than cover the cost of the lab, which will only be a nominal expense since we'll destroy the environment afterwards.*
+
+- An administrator account, or a user or service ID with:
+    - Manager or higher permissions for VPC
+    - Editor or higher level platform permissions
+    - IP Spoofing Operator role
 
 - Chrome, Edge, or Firefox are recommended, although Safari may suffice
 
@@ -35,7 +41,9 @@ ALBs play an important role in how enterprises deliver software (in this case, w
 
 For a more detailed explanation on load balancing, visit this article from IBM: https://www.ibm.com/topics/load-balancing.
 
-We'll start by deploying properly configured VPC infrastructure, including an ALB and instance group.
+For additional information about IBM Cloud for Financial Services, visit these docs for plenty of other guides on how to get started: https://cloud.ibm.com/docs/framework-financial-services?topic=framework-financial-services-about
+
+Let's start this lab by deploying properly configured VPC infrastructure, including an ALB and instance group.
 
 Then, we'll tamper with the configurations enough to illustrate when and why it might break, why that behavior should or should not be expected, and how to avoid some common pitfalls.
 
@@ -407,6 +415,8 @@ At this point, you should be able to validate that your:
 ## References
 
 https://www.ibm.com/topics/load-balancing
+
+https://cloud.ibm.com/docs/framework-financial-services?topic=framework-financial-services-about
 
 https://cloud.ibm.com/docs/vpc?topic=vpc-load-balancers&interface=ui
 

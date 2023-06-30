@@ -106,8 +106,54 @@ Create a front-end listener by clicking "Create Listener," and enter the followi
 
 ## Phase 3 - Create an Instance Template
 
+Within VPC Infrastructure, create an instance template with the following configurations.
+
+- Server Type / Architecture: Intel
+- Hosting type: Public
+- Location: Same Region as your VPC, any zone
+- Name: lb- demo
+- Resource Group: Default (others can be used as desired)
+- Operating System (Stock Image): Ubuntu Linux 22.04
+- Profile: Balanced, bx2–2x8 (2 vCPUs | 8 GB RAM)
+- SSH keys: If you have existing keys shown in the IBM Cloud portal, AND you still have the private key of the key pair on your local machine, feel free to select the appropriate existing key
+- Otherwise:
+    - Generate a new key pair on your machine using the appropriate process for your operating system.
+    - For Windows users, follow the steps in this tutorial: https://learn.microsoft.com/en-us/windows/terminal/tutorials/ssh
+    - For Mac users, execute the command ssh-keygen in your terminal, and follow the prompts to create the key pair.
+    - Then, copy the contents of your public key file to your clipboard. Mac users can execute the following command in their terminal (after populating with your path and public key name) to output the contents of your public key.
+        ```console
+        cat <path>/<name_of_pub_key>.pub
+        ```
+    - *Keep in mind the file extension of the public key is .pub, not .pem*
+
+    - Enter the public key into the prompts that follow "Create an SSH Key" in the IBM Cloud Portal. A simple copy and paste from your terminal into the text box should result in a properly formatted key. Use the screenshots below to validate or help with formatting your public key in the text box as needed. Of course, your full key will be different than the (portions of a) key shown in the screenshots.
+
+        ![top-pub-key](./lb-assets/pub-key-top.png)
+
+        *Top of text box containing your public key*
+
+        ![bot-pub-key](./lb-assets/pub-key-bot.png)
+
+        *Bottom of text box containing your public key*
 
 
+- Skip the storage sections - the default configuration of a single boot volume will suffice for this lab.
+- In the Networking section, select the VPC you created previously
+- Skip the Network Interfaces section
+- Under Advanced Options, update the user data with the following script: https://github.com/atugman/IBM-Cloud/blob/main/Labs/lb-scripts/lb-user-data.sh
+
+**IMPORTANT**- *ensure you capture the entire script, including the first line:*
+
+```console
+#!/bin/bash 
+# ^---make sure the line above is the first line of your user data
+# followed by the remainder of the script!
+...
+```
+
+*We'll dive into the specifications of the script a bit later.*
+
+*Review and create the Instance Template.*
 
 ## Phase 4 - Create an Instance Group
 

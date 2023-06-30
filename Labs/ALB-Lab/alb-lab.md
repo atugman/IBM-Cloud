@@ -126,6 +126,8 @@ Within VPC Infrastructure, create an instance template with the following config
     - Enter the public key into the prompts that follow "Create an SSH Key" in the IBM Cloud Portal. A simple copy and paste from your terminal into the text box should result in a properly formatted key. Use the screenshots below to validate or help with formatting your public key in the text box as needed. Of course, your full key will be different than the (portions of a) key shown in the screenshots.
 
         ![top-pub-key](./lb-assets/pub-key-top.png)
+        
+        <img src="https://github.com/atugman/IBM-Cloud/blob/main/Labs/ALB-Lab/lb-assets/pub-key-top.png" width="150" height="50">
 
         *Top of text box containing your public key*
 

@@ -129,18 +129,9 @@ Within VPC Infrastructure, create an instance template with the following config
         ```
     - *Keep in mind the file extension of the public key is .pub, not .pem*
 
-    - Enter the public key into the prompts that follow "Create an SSH Key" in the IBM Cloud Portal. A simple copy and paste from your terminal into the text box should result in a properly formatted key. Use the screenshots below to validate or help with formatting your public key in the text box as needed. Of course, your full key will be different than the (portions of a) key shown in the screenshots.
+    - Enter the public key into the prompts that follow "Create an SSH Key" in the IBM Cloud Portal. A simple copy and paste from your terminal into the text box should result in a properly formatted key.
 
-        ![top-pub-key](./lb-assets/pub-key-top.png)
-        
-        <img src="https://github.com/atugman/IBM-Cloud/blob/main/Labs/ALB-Lab/lb-assets/pub-key-top.png" width="150" height="50">
-
-        *Top of text box containing your public key*
-
-        ![bot-pub-key](./lb-assets/pub-key-bot.png)
-
-        *Bottom of text box containing your public key*
-
+        - Be sure to capture the full key, including the first line: ```ssh-rsa```
 
 - Skip the storage sections - the default configuration of a single boot volume will suffice for this lab.
 - In the Networking section, select the VPC you created previously
@@ -275,15 +266,13 @@ Within a few moments, you'll find that the load balancer declares all of our ins
 
 ![unhealthy-instances](./lb-assets/unhealthy-instances.png)
 
-And, as you probably suspected, if you try to access the web applicaition, you'll receive a 503:
-
-![503](./lb-assets/503.png)
+And, as you probably suspected, if you try to access the web applicaition, you'll receive a **503 error, indicating that there's no server available to handle your request.**
 
 Before we move onto our next exercise reconfigure the health check correctly - replace the fake path with "/" (excluding the quotation marks) and save the configuration.
 
 ### Simulate an Issue with a Single Node
 
-So we saw what happens when our load balancer even thinks our nodes are unhealthy. What happens if one of the nodes actually crashes? 
+So we saw what happens when our load balancer even thinks our nodes are unhealthy. What happens if *one* of the nodes actually crashes? 
 
 What if a recent software update doesn't play nicely with our (super complex) application?
 Well, here is a very simple test that will emulate some of these behaviors. Simply navigate to one of your instances, and shut the instance down.

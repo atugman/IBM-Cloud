@@ -30,6 +30,10 @@
 
 - Some experience with cloud computing and/or networking would be helpful, but this guided lab can be completed by all experience levels
     - Depending on your level of experience in the realm of networking, you may find that the experiments in this writeup are fairly rudimentary. The goal is to bring some foundational concepts to life with illustrations while reinforcing concepts vital to application uptime. This writeup should provide exercises appropriate for most experience levels.
+  
+- Lastly, please note that a terraform to aid in this lab will soon be available.
+
+- This lab will likely take 30-40 minutes to complete
 
 ## Introduction
 

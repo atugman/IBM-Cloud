@@ -19,7 +19,7 @@
 
 - An IBM Cloud account
 
-  - *Use the code VPC1000 for $1,000 in IBM Cloud VPC credits! This will more than cover the cost of the lab, which will only be a nominal expense since we'll destroy the environment afterwards.*
+  - *Use code ```VPC1000``` for $1,000 in IBM Cloud VPC credits! This will more than cover the cost of the lab, which will only be a nominal expense since we'll destroy the environment afterwards.*
 
 - An administrator account, or a user or service ID with:
     - Manager or higher permissions for VPC

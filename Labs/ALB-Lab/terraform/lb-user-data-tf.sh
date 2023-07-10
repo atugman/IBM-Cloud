@@ -6,7 +6,6 @@ cd /var/www/html
 rm index.html
 touch index.html
 hostname > inst_name.txt
-echo "10.240.64." > ip.txt
 a=`ip a`
 echo $a | grep -o -P '(?<=10.240.64.).*(?=/28)' > ip.txt
 sed 's/\s.*$//' ip.txt > ip_trimmed.txt
@@ -19,7 +18,7 @@ cat <<EOF > index.html
     <title>Load Balancer Lab!</title>
     </head>
     <body>
-    <div>Traffic is hitting <b>${inst_name}</b> at <b>${ip}!</b></div>
+    <div>Traffic is hitting <b>${inst_name}</b> at <b>10.240.64.${ip}!</b></div>
     <div>The current stored value is <b>${random_number}</b></div>
     <form action="" id="webForm">
         <h1></h1>

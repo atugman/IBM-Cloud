@@ -155,21 +155,13 @@ resource "ibm_is_instance_template" "example" {
   #/*
   user_data      = <<-EOUD
     #!/bin/bash
+    cd /root
+    touch test.py
     sudo apt -y update
-    sudo apt -y install apache2
-    sudo apt -y install stress
-    cd /
+    touch test2.py
     git clone https://github.com/atugman/IBM-Cloud.git
-    cd /var/www/html
-    rm index.html
-    hostname > inst_name.txt
-    hostname -i > ip.txt
-    sed 's/\s.*$//' ip.txt > ip_trimmed.txt
-    export inst_name=`cat inst_name.txt`
-    export ip=`cat ip_trimmed.txt`
-    echo $(( $RANDOM % 50 + 1 )) > random_number.txt
-    export random_number=`cat random_number.txt`
-    cp /IBM-Cloud/Labs/ALB-Lab/_index.html index.html
+    bash ./IBM-Cloud/Labs/ALB-Lab/lb-user-data.sh
+    touch test3.py
     EOUD
     
   #*/

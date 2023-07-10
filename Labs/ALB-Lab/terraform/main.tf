@@ -1,10 +1,8 @@
 # ~~ Work in progress ~~ #
 
-# TODO: Associate public gw w/ subnet (currently done manually)
 # TODO: Speed up user data execution + troubleshooting / edge cases
 # TODO: remove cd /root from user data?
-# TODO: Larger subnet (if needed)
-# TODO: Code cleanup
+# TODO: Code cleanup - comments, file structure, naming conventions, etc.
 
 terraform {
   required_providers {
@@ -44,6 +42,16 @@ resource "ibm_is_security_group_rule" "example" {
   }
 }
 
+resource "ibm_is_security_group_rule" "example1" {
+  group     = ibm_is_security_group.example.id
+  direction = "inbound"
+  remote    = "0.0.0.0/0"
+  tcp {
+    port_min = 8080
+    port_max = 8080
+  }
+}
+
 resource "ibm_is_security_group_rule" "example2" {
   group     = ibm_is_security_group.example.id
   direction = "inbound"
@@ -58,8 +66,24 @@ resource "ibm_is_security_group_rule" "example3" {
   group     = ibm_is_security_group.example.id
   direction = "outbound"
   remote    = "0.0.0.0/0"
-  tcp {
+  #tcp {
+  #}
+}
+
+resource "ibm_is_security_group_rule" "example4" {
+  group     = ibm_is_security_group.example.id
+  direction = "inbound"
+  remote    = "0.0.0.0/0"
+  icmp {
+    #code = "ANY"
+    type = 8
   }
+}
+
+resource "ibm_is_security_group_rule" "example5" {
+  group     = ibm_is_security_group.example.id
+  direction = "inbound"
+  remote    = ibm_is_security_group.example.id
 }
 
 resource "ibm_is_vpc" "example" {
@@ -80,6 +104,11 @@ resource "ibm_is_subnet" "example" {
   zone            = "us-south-2"
   ipv4_cidr_block = "10.240.64.0/28"
   #public_gateway = true
+}
+
+resource "ibm_is_subnet_public_gateway_attachment" "example" {
+  subnet                = ibm_is_subnet.example.id
+  public_gateway         = ibm_is_public_gateway.example.id
 }
 
 resource "ibm_is_ssh_key" "shared_ssh_key" {
@@ -123,21 +152,32 @@ resource "ibm_is_instance_template" "example" {
     }
   }
   */
-
+  #/*
   user_data      = <<-EOUD
     #!/bin/bash
-    cd /root
-    touch test.py
     sudo apt -y update
-    touch test2.py
+    sudo apt -y install apache2
+    sudo apt -y install stress
+    cd /
     git clone https://github.com/atugman/IBM-Cloud.git
-    bash ./IBM-Cloud/Labs/ALB-Lab/lb-user-data.sh
-    touch test3.py
+    cd /var/www/html
+    rm index.html
+    hostname > inst_name.txt
+    hostname -i > ip.txt
+    sed 's/\s.*$//' ip.txt > ip_trimmed.txt
+    export inst_name=`cat inst_name.txt`
+    export ip=`cat ip_trimmed.txt`
+    echo $(( $RANDOM % 50 + 1 )) > random_number.txt
+    export random_number=`cat random_number.txt`
+    cp /IBM-Cloud/Labs/ALB-Lab/_index.html index.html
     EOUD
+    
+  #*/
 }
 
 resource "ibm_is_lb" "example" {
   name    = "example-load-balancer"
+  security_groups = [ibm_is_security_group.example.id]
   subnets = [ibm_is_subnet.example.id]
 }
 
@@ -174,6 +214,7 @@ resource "ibm_is_instance_group" "example" {
   load_balancer     = ibm_is_lb.example.id
   load_balancer_pool = ibm_is_lb_pool.example.pool_id
   application_port  = 80
+  #depends_on     = [ibm_is_instance_template.example]
 
   //User can configure timeouts
   timeouts {
@@ -182,7 +223,6 @@ resource "ibm_is_instance_group" "example" {
     update = "10m"
   }
 }
-
 
 resource "ibm_is_instance_group_manager" "example" {
   name                 = "example-ig-manager"

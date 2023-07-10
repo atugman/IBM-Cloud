@@ -127,9 +127,8 @@ resource "ibm_is_instance_template" "example" {
   keys = [ ibm_is_ssh_key.shared_ssh_key.id ]
 
   primary_network_interface {
-
     subnet            = ibm_is_subnet.example.id
-    allow_ip_spoofing = true
+    allow_ip_spoofing = false
     security_groups = [ ibm_is_security_group.example.id ]
   }
 
@@ -155,13 +154,8 @@ resource "ibm_is_instance_template" "example" {
   #/*
   user_data      = <<-EOUD
     #!/bin/bash
-    cd /root
-    touch test.py
-    sudo apt -y update
-    touch test2.py
     git clone https://github.com/atugman/IBM-Cloud.git
-    bash ./IBM-Cloud/Labs/ALB-Lab/lb-user-data.sh
-    touch test3.py
+    bash ./IBM-Cloud/Labs/ALB-Lab/terraform/lb-user-data-tf.sh
     EOUD
     
   #*/

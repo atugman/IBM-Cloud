@@ -1,0 +1,1 @@
+resource "ibm_is_vpc" "terraform-import-demo-vpc" {}

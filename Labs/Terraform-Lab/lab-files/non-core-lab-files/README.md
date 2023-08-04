@@ -1,0 +1,1 @@
+These files in ./non-core-lab-files provide only an auxiliary exercise. A separate, less effective python program that could also be used to import resources into terraform. Feel free to experiment with these at your leisure. In my opinion, the approach that this program uses would require higher effort to implement at scale.

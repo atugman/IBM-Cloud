@@ -1,0 +1,3 @@
+- Implements VPC infrastructure with VPC Flow Logs enabled.
+- iCOS_reader.py (under construction) used to read log files of VPC Flow Logs
+- More detail on this exercise coming soon.

@@ -1,6 +1,6 @@
 
-*walkthrough under construction*
-*detailed instructions will soon be provided!*
+- *walkthrough under construction*
+- *detailed instructions will soon be provided!*
 
 
 ```terraform state show 'ibm_is_subnet.example'```

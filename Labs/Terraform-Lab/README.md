@@ -1,0 +1,3 @@
+- Implements basic VPC infrastructure
+- Python files are designed to import existing resources and write tf resources for you, although may require additional configuration
+- Walkthrough (of tf and Python code) and discussion to be released soon

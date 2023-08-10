@@ -1,5 +1,6 @@
 
-
+*walkthrough under construction*
+*detailed instructions will soon be provided!*
 
 
 ```terraform state show 'ibm_is_subnet.example'```
@@ -56,7 +57,6 @@ Terraform will perform the following actions:
   # ibm_is_instance_template.example must be replaced
 -/+ resource "ibm_is_instance_template" "example" {
       + availability_policy_host_failure  = (known after apply)
-      ~ crn                               = "crn:v1:bluemix:public:is:us-south-2:a/475b3414ebd44f2caf3deccbd12a1640::instance-template:0727-3cbab154-a94e-4d1e-a76c-c1c20182047f" -> (known after apply)
       + default_trusted_profile_auto_link = (known after apply)
       ~ id                                = "0727-3cbab154-a94e-4d1e-a76c-c1c20182047f" -> (known after apply)
       + metadata_service_enabled          = (known after apply)
@@ -68,7 +68,6 @@ Terraform will perform the following actions:
               - id   = null
             },
         ] -> (known after apply)
-      ~ resource_group                    = "bf9d125f31ad41df8f528ff5719ee757" -> (known after apply)
         # (6 unchanged attributes hidden)
 
       ~ boot_volume {
@@ -105,14 +104,12 @@ Terraform will perform the following actions:
 -/+ resource "ibm_is_subnet" "example" {
       ~ access_tags                  = [] -> (known after apply)
       ~ available_ipv4_address_count = 251 -> (known after apply)
-      ~ crn                          = "crn:v1:bluemix:public:is:us-south-2:a/475b3414ebd44f2caf3deccbd12a1640::subnet:0727-b68aad4e-3bd1-4857-82f4-db5303d3df04" -> (known after apply)
       ~ id                           = "0727-b68aad4e-3bd1-4857-82f4-db5303d3df04" -> (known after apply)
       ~ ipv4_cidr_block              = "10.240.64.0/24" -> "10.240.64.0/18" # forces replacement
         name                         = "tf-basics-subnet"
       ~ network_acl                  = "r006-6888995e-1fbc-4a51-9d3f-3a6ecac42a42" -> (known after apply)
       + public_gateway               = (known after apply)
       ~ resource_controller_url      = "https://cloud.ibm.com/vpc-ext/network/subnets" -> (known after apply)
-      ~ resource_crn                 = "crn:v1:bluemix:public:is:us-south-2:a/475b3414ebd44f2caf3deccbd12a1640::subnet:0727-b68aad4e-3bd1-4857-82f4-db5303d3df04" -> (known after apply)
       ~ resource_group               = "bf9d125f31ad41df8f528ff5719ee757" -> (known after apply)
       ~ resource_group_name          = "Default" -> (known after apply)
       ~ resource_name                = "tf-basics-subnet" -> (known after apply)

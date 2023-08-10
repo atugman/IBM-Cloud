@@ -91,6 +91,5 @@ resource "ibm_is_instance_template" "example" {
   user_data      = <<-EOUD
     #!/bin/bash
     git clone https://github.com/atugman/IBM-Cloud.git
-    bash ./IBM-Cloud/Labs/ALB-Lab/terraform/lb-user-data-tf.sh
     EOUD
 }

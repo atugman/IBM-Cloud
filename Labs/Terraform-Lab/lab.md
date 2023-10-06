@@ -4,9 +4,72 @@
 
 - Simple Terraform lab
 
+If you're following along locally, consider the following prerequisites:
+- IBM Cloud Account & API Key
+- Local Terraform installation
+
+Otherwise, feel free to continue reading.
+
 We'll use the IBM Cloud Terraform provider to walk through this simple exercise.
 
-First, copy the code from this directory locally.
+If you're following along, we'll first want to copy the code contained in ```main.tf``` in [this directory](https://github.com/atugman/IBM-Cloud/tree/main/Labs/Terraform-Lab/lab-files/terraform-basics-labw) locally. 
+
+You can do this via a manual copy and paste, or by cloning the [full repository](https://github.com/atugman/IBM-Cloud/tree/main).
+
+If you elect to use a manual copy and paste - create a file named ```main.tf``` however you'd like, but *make sure it's in its own directory*. From your local terminal, you could run a few commands like: 
+- ```cd Documents```
+- ```mkdir tf-basics-lab```
+- ```cd tf-basics-lab```
+- ```touch main.tf```
+
+ If you prefer to clone the repository, you can do so with this command: ```git clone https://github.com/atugman/IBM-Cloud.git```. Afterwards, navigate to the appropriate subdirectory with ```cd IBM-Cloud/Labs/Terraform-Lab/lab-files/terraform-basics-lab```.
+
+Once you've copied the code via either method and are in the appropriate directory, naturally we'll start by running the ```terraform init``` command from our local terminal. A successful output will include verbiage along the lines of: 
+
+```
+Terraform has been successfully initialized!
+
+You may now begin working with Terraform. Try running "terraform plan" to see
+any changes that are required for your infrastructure. All Terraform commands
+should now work.
+```
+
+Next, let's **securely** use our IBM Cloud credentials (API key) via Terraform Environment Variables. Terraform Environment Variables (just like traditional Linux environmental variables) are extremely helpful in preventing us form exposing credentials in code. Execute the following command in your terminal, supplying your IBM Cloud API key.
+
+```export TF_VAR_api_key=YOUR_IBM_CLOUD_API_KEY```
+
+Let's start deploying our IBM Cloud resources. We're creating an extremely simple architecture - in fact, one that won't incur any costs. We'll stop short of deploying any actual servers or applications, but rather just a few basic resources (listed below). Nonetheless, keep in mind any dependencies that could exist between these resources!
+- VPC & one subnet
+- A security group, with a few simple security rules
+- A resource group
+- An SSH Key
+- And a Virtual Server Instance *Template* (again, not an actual instance)
+
+Let's run ```terraform plan``` as a best practice. This command will effectively **simulate** changes to your infrastructure (based on your codebase, or any changes to your codebase), without actually implementing these changes. An absolute *must* in production!
+
+Successful execution of this command should result in a terminal message similar to:
+
+```Plan: 9 to add, 0 to change, 0 to destroy.```
+
+...along with a list of resources to be added to the Terraform state.
+
+Then, run ```terraform apply``` to deploy our initial set of cloud resources.
+
+When prompted, enter 'yes' when Terraform asks if you'd like to perform these actions (confirmation that you'd like to create these resources). 
+
+Successful execution of this command should result in a terminal message similar to:
+
+```Apply complete! Resources: 9 added, 0 changed, 0 destroyed.```
+
+...again, along with a list of resources that were created and added to the terraform state.
+
+Alright, now is the fun part. We have our initial cloud resources deployed, albeit, for the purposes of this lab, no significant resources have been deployed. 
+
+***terraform state stored in json
+***why is stateful important??
+
+***simple change, impact
+***networking commentary
 
 ```terraform state show 'ibm_is_subnet.example'```
 

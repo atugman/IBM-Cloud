@@ -13,9 +13,19 @@ provider "ibm" {
   ibmcloud_api_key = var.api_key
 }
 
+# Variables
+# export TF_VAR_api_key=YOUR_IBM_CLOUD_API_KEY
+variable "api_key" {}
+
+variable "public_key_file"  {
+    default = "~/.ssh/id_rsa.pub" 
+}
+
 locals {
   public_key    = file(pathexpand(var.public_key_file))
 }
+
+# Resources
 
 resource "ibm_is_security_group" "example" {
   name = "tf-basics-security-group"

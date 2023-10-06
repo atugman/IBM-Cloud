@@ -1,6 +1,8 @@
 Lab: The Value of Terraform - Basic Handling of Dependent Resources
 ========
 
+## Introduction
+
 Consider the following prerequisites, although feel free to continue reading even if you aren't following along locally.
 - IBM Cloud Account & API Key
 - Local Terraform installation
@@ -8,6 +10,8 @@ Consider the following prerequisites, although feel free to continue reading eve
 Newer terraformers *may* feel as though some foundational concepts are brushed over, although I've tried to add some verbiage to address this.
 
 We'll use the IBM Cloud Terraform provider to walk through this simple exercise.
+
+## Create main.tf
 
 If you're following along, we'll first want to copy the code contained in ```main.tf``` in [this directory](https://github.com/atugman/IBM-Cloud/tree/main/Labs/Terraform-Lab/lab-files/terraform-basics-labw) locally. 
 
@@ -20,6 +24,8 @@ If you elect to use a manual copy and paste - create a file named ```main.tf``` 
 
  If you prefer to clone the repository, you can do so with this command: ```git clone https://github.com/atugman/IBM-Cloud.git```. Afterwards, navigate to the appropriate subdirectory with ```cd IBM-Cloud/Labs/Terraform-Lab/lab-files/terraform-basics-lab```.
 
+## Run terraform init
+
 Once you've copied the code via either method and are in the appropriate directory, naturally we'll start by running the ```terraform init``` command from our local terminal. A successful output will include verbiage along the lines of: 
 
 ```
@@ -30,16 +36,22 @@ any changes that are required for your infrastructure. All Terraform commands
 should now work.
 ```
 
+## Terraform Environment Variables
+
 Next, let's **securely** use our IBM Cloud credentials (API key) via Terraform Environment Variables. Terraform Environment Variables (just like traditional Linux environmental variables) are extremely helpful in preventing us form exposing credentials in code. Execute the following command in your terminal, supplying your IBM Cloud API key.
 
 ```export TF_VAR_api_key=YOUR_IBM_CLOUD_API_KEY```
 
-Let's start deploying our IBM Cloud resources. We're creating an extremely simple architecture - in fact, one that won't incur any costs. We'll stop short of deploying any actual servers or applications, but rather just a few basic resources (listed below). Nonetheless, keep in mind any dependencies that could exist between these resources!
+## Architecture
+
+We're creating an extremely simple architecture - in fact, one that won't incur any costs. We'll stop short of deploying any actual servers or applications, but rather just a few basic resources (listed below). Nonetheless, keep in mind any dependencies that could exist between these resources!
 - VPC & one subnet
 - A security group, with a few simple security rules
 - A resource group
 - An SSH Key
 - And a Virtual Server Instance *Template* (again, not an actual instance)
+
+## Terraform plan
 
 Let's run ```terraform plan``` as a best practice. This command will effectively **simulate** changes to your infrastructure (based on your codebase, or any changes to your codebase), without actually implementing these changes. An absolute *must* in production!
 
@@ -50,6 +62,8 @@ Plan: 9 to add, 0 to change, 0 to destroy.
 ```
 
 ...along with a list of resources to be added to the Terraform state.
+
+# Terraform apply
 
 Then, run ```terraform apply``` to deploy our initial set of cloud resources.
 
@@ -64,6 +78,8 @@ Apply complete! Resources: 9 added, 0 changed, 0 destroyed.
 ...again, along with a list of resources that were created and added to the terraform state.
 
 So, we have our initial cloud resources deployed, albeit, for the purposes of this lab, no significant resources have been deployed. 
+
+## Terraform state
 
 You should notice a new file named ```terraform.tfstate```. Terraform stores its state in this JSON file. Feel free to explore the contents of this file.
 
@@ -87,6 +103,8 @@ resource "ibm_is_subnet" "example" {
 
 The most important thing to note here is that, as far as Terraform is concerned, the CIDR block of our subnet is 10.240.64.0/24, just like we defined in our code.
 
+## Updating Terraform Configurations
+
 Suppose we need to update the configuration of one of our resources - let's say something as foundational as the CIDR block of our VPC, or one of the subnets of our VPC. 
 
 Now, hopefully this isn't a change you'll find yourself making often. Defining address spaces in the cloud, and defining them correctly, is a critical early stage exercise of a successful cloud migration. You don't want to be in the business of updating CIDR blocks after you're up and running in the cloud - it's bound to create issues, overlap with address spaces in on-premises networks, or, in our case, cause issues with dependent cloud resources. Regardless of the scenario, updating CIDR blocks (after day 0) is typically very tedious.
@@ -104,6 +122,8 @@ resource "ibm_is_subnet" "example" {
   ipv4_cidr_block = "10.240.64.0/18" # <--- New CIDR block to be applied
 }
 ```
+
+## Dependent Resources
 
 After making this change, let's rerun the ```terraform plan``` command to simulate how Terraform would handle these changes.
 

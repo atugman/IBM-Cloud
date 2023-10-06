@@ -1,4 +1,4 @@
-Lab: Value of Terraform - Basic Handling of Dependent Resources
+Lab: The Value of Terraform - Basic Handling of Dependent Resources
 ========
 
 Consider the following prerequisites, although feel free to continue reading even if you aren't following along locally.

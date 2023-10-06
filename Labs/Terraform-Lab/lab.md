@@ -1,9 +1,11 @@
-Simple Terraform Lab
+Lab: Value of Terraform - Basic Handling of Dependent Resources
 ========
 
-If you're following along locally, consider the following prerequisites, otherwise feel free to continue reading.
+Consider the following prerequisites, although feel free to continue reading even if you aren't following along locally.
 - IBM Cloud Account & API Key
 - Local Terraform installation
+
+Newer terraformers *may* feel as though some foundational concepts are brushed over, although I've tried to add some verbiage to address this.
 
 We'll use the IBM Cloud Terraform provider to walk through this simple exercise.
 

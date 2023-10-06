@@ -1,9 +1,9 @@
-Anecdotes from the HashiCorp Certified: Terraform Associate (003) Certification Exam
+Notes from the HashiCorp Certified: Terraform Associate (003) Certification Exam
 ==============
 
 I recently cleared the HashiCorp Certified: Terraform Associate (003) exam. Here are a few takeaways from my experience with the exam, my experience with Terraform as a whole, and (optionally) a couple of lab exercises.
 
-**Key Exam Prep Resources**
+# Key Exam Prep Resources #
 
 - Udemy Prep Course - HashiCorp Certified: Terraform Associate 2023: https://ibm-learning.udemy.com/course/terraform-beginner-to-advanced
   - Note that you can skip the section on provisioners, which was removed from the 003 exam.
@@ -11,12 +11,12 @@ I recently cleared the HashiCorp Certified: Terraform Associate (003) exam. Here
 - Practice test via O'Reilly / Pearson: https://learning.oreilly.com/certifications/9780138190408/
   - Use the documentation provided in the feedback of each question!
 
-  -*For any IBMers reading this, we have access to each of these.*
+  - *For any IBMers reading this, we have access to each of these!*
 
 - Practice locally
   - This will be particularly helpful to anyone newer to Terraform. More on this below.
 
-**General Thoughts**
+# General Thoughts #
 
 All in all, I had a good experience taking the exam. As with most technical certifications, I don't feel that it covers *everything* that one needs to know to be a perfectly fluent SRE or developer who writes beautiful, bullet-proof, production-grade code. But, I do think it aligns well overall with 'the real world' so to speak, and should serve as a solid foundation for anyone newer to IaC, or experienced individuals looking to validate their knowledge of Terraform.
 
@@ -26,7 +26,7 @@ I relied primarily on previous experience and reviewing some nuances of HashiCor
 
 The biggest recommendation I would share, particularly to newer Terraformers and coders, pertains to both preparing for the exam, and generally improving your coding skills. **Practice, practice, practice.** *Most* of your code, whether it's HashiCorp Language or not, is not going to work *perfectly* (or sometimes even at all) the first time that you write it. Understanding error messages, or why your code didn't result in the exact outcome that you anticipated will go a long way both in terms understanding key Terraform concepts that will help you reason through the exam, and in terms of becoming a better coder.
 
-**Value of Terraform**
+# Value of Terraform #
 
 My last comment will speak to the value of Terraform. I think this concept *could* get lost in the shuffle of preparing for the exam (although *shouldn't*), but let me speak to one of my favorite aspects of Terraform through a real-world example.
 

@@ -66,7 +66,7 @@ resource "ibm_is_subnet" "example" {
   name            = "tf-basics-subnet"
   vpc             = ibm_is_vpc.example.id
   zone            = "us-south-2"
-  ipv4_cidr_block = "10.240.64.0/18"
+  ipv4_cidr_block = "10.240.64.0/24"
 }
 
 resource "ibm_is_ssh_key" "shared_ssh_key" {

@@ -52,4 +52,4 @@ But, you could be missing out on state management capabilities (which are founda
 
 What if I used Python to create 6 VPCs that each contain between 18-22 VMs that were each created from one of 8 different instance templates and are part of one of 5 different scaling groups? Then, a new requirement arises where some infrastructure configurations need to be updated. Think of all of the resources that depend on each other in this type of architecture.
 
-Let's take a look at a very simple example of this phenomenon.
+Let's take a look at a very simple example of this phenomenon through a [quick, simple lab](https://github.com/atugman/IBM-Cloud/blob/main/Labs/Terraform-Lab/lab.md)

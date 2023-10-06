@@ -53,7 +53,7 @@ Plan: 9 to add, 0 to change, 0 to destroy.
 
 Then, run ```terraform apply``` to deploy our initial set of cloud resources.
 
-When prompted, enter 'yes' when Terraform asks if you'd like to perform these actions (confirmation that you'd like to create these resources). 
+When prompted, enter 'yes' when Terraform asks if you'd like to perform these actions (confirming that you'd like to create these resources). 
 
 Successful execution of this command should result in a terminal message similar to:
 
@@ -89,7 +89,7 @@ The most important thing to note here is that, as far as Terraform is concerned,
 
 Suppose we need to update the configuration of one of our resources - let's say something as foundational as the CIDR block of our VPC, or one of the subnets of our VPC. 
 
-Now, hopefully this isn't a change you'll find yourself making often. Defining address spaces in the cloud, and defining them correctly, is a critical early stage exercise of a successful cloud migration. You don't want to be in the business of updating CIDR blocks after you're up and running in the cloud - it's bound to create issues, overlap with address spaces in on-premises networks, or, in our case, cause issues with dependent cloud resources.
+Now, hopefully this isn't a change you'll find yourself making often. Defining address spaces in the cloud, and defining them correctly, is a critical early stage exercise of a successful cloud migration. You don't want to be in the business of updating CIDR blocks after you're up and running in the cloud - it's bound to create issues, overlap with address spaces in on-premises networks, or, in our case, cause issues with dependent cloud resources. Regardless of the scenario, updating CIDR blocks (after day 0) is typically very tedious.
 
 But, for the purposes of this exercise, let's update the CIDR block of our subnet to demonstrate how Terraform handles dependent resources.
 
@@ -191,8 +191,8 @@ Apply complete! Resources: 2 added, 0 changed, 2 destroyed.
 
 Had we made these changes directly in the cloud portal, we would have had to complete each of these steps manually. Subnet CIDR blocks and instance templates are immutable resources, and cannot be modified. 
 
-Without Terraform, we would have had to manually delete each resource (in the proper order) and recreate it, or write our own automation to do so. Keep in mind once again that this is an extremely simple set of cloud resources. 
+Conducting such tasks manually in production is not an option, and writing custom automation could be cumbersome and could require thorough testing. Custom automation in this sense would need to handle many tasks that Terraform handles natively - storing and refreshing the state - (the program becoming aware current configurations directly from the cloud provider's API), updating or destroying/recreating resources based on specific changes or conditions, understanding dependent resources and the order in which to destroy and recreate them...and there's plenty more to the program.
 
-Conducting such tasks manually in production is not an option, and writing custom automation could be cumbersome and could require extensive testing. Terraform, on the other hand, handles dependent resources for us, and would throw appropriate error messages in the event that we attempt to make a change that isn't allowed.
+Terraform, on the other hand, generally handles dependent resources for us, and would throw appropriate error messages in the event that we attempt to make a change that isn't allowed. One last thing to keep in mind - the Terraform [depends_on](https://developer.hashicorp.com/terraform/language/meta-arguments/depends_on) argument, which can be used to further define which resources could be impacted by changes to other resources. We won't take a deep dive of ```depends_on``` here, but know that, even when this argument is necessary, it's still far more simplistic than writing our own custom automation as alluded to above.
 
-Be sure to run a final ```terraform destroy``` command to clean up the environment.
+Thank you for your time! Be sure to run a final ```terraform destroy``` command to clean up the environment.

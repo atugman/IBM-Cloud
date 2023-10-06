@@ -2,6 +2,11 @@
 - *walkthrough under construction*
 - *detailed instructions will soon be provided!*
 
+- Simple Terraform lab
+
+We'll use the IBM Cloud Terraform provider to walk through this simple exercise.
+
+First, copy the code from this directory locally.
 
 ```terraform state show 'ibm_is_subnet.example'```
 

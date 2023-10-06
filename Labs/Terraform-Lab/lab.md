@@ -1,14 +1,9 @@
+Simple Terraform Lab
+========
 
-- *walkthrough under construction*
-- *detailed instructions will soon be provided!*
-
-- Simple Terraform lab
-
-If you're following along locally, consider the following prerequisites:
+If you're following along locally, consider the following prerequisites, otherwise feel free to continue reading.
 - IBM Cloud Account & API Key
 - Local Terraform installation
-
-Otherwise, feel free to continue reading.
 
 We'll use the IBM Cloud Terraform provider to walk through this simple exercise.
 
@@ -16,10 +11,9 @@ If you're following along, we'll first want to copy the code contained in ```mai
 
 You can do this via a manual copy and paste, or by cloning the [full repository](https://github.com/atugman/IBM-Cloud/tree/main).
 
-If you elect to use a manual copy and paste - create a file named ```main.tf``` however you'd like, but *make sure it's in its own directory*. From your local terminal, you could run a few commands like: 
+If you elect to use a manual copy and paste - create a file named ```main.tf``` however you'd like, but *make sure it's in its own directory*. From your local terminal, you could run a few commands like:
 - ```cd Documents```
-- ```mkdir tf-basics-lab```
-- ```cd tf-basics-lab```
+- ```mkdir tf-basics-lab && cd tf-basics-lab```
 - ```touch main.tf```
 
  If you prefer to clone the repository, you can do so with this command: ```git clone https://github.com/atugman/IBM-Cloud.git```. Afterwards, navigate to the appropriate subdirectory with ```cd IBM-Cloud/Labs/Terraform-Lab/lab-files/terraform-basics-lab```.
@@ -49,7 +43,9 @@ Let's run ```terraform plan``` as a best practice. This command will effectively
 
 Successful execution of this command should result in a terminal message similar to:
 
-```Plan: 9 to add, 0 to change, 0 to destroy.```
+```
+Plan: 9 to add, 0 to change, 0 to destroy.
+```
 
 ...along with a list of resources to be added to the Terraform state.
 
@@ -59,19 +55,17 @@ When prompted, enter 'yes' when Terraform asks if you'd like to perform these ac
 
 Successful execution of this command should result in a terminal message similar to:
 
-```Apply complete! Resources: 9 added, 0 changed, 0 destroyed.```
+```
+Apply complete! Resources: 9 added, 0 changed, 0 destroyed.
+```
 
 ...again, along with a list of resources that were created and added to the terraform state.
 
-Alright, now is the fun part. We have our initial cloud resources deployed, albeit, for the purposes of this lab, no significant resources have been deployed. 
+So, we have our initial cloud resources deployed, albeit, for the purposes of this lab, no significant resources have been deployed. 
 
-***terraform state stored in json
-***why is stateful important??
+You should notice a new file named ```terraform.tfstate```. Terraform stores its state in this JSON file. Feel free to explore the contents of this file.
 
-***simple change, impact
-***networking commentary
-
-```terraform state show 'ibm_is_subnet.example'```
+We can also output the contents of our state using the ```terraform state show``` command, followed by desired arguments. Let's run the following command to view the current state of our subnet: ```terraform state show 'ibm_is_subnet.example'```, which should result in a terminal output similar to the following.
 
 ```
 resource "ibm_is_subnet" "example" {
@@ -89,9 +83,15 @@ resource "ibm_is_subnet" "example" {
 }
 ```
 
-<!--![new_cidr](./assets/new_cidr.png)-->
+The most important thing to note here is that, as far as Terraform is concerned, the CIDR block of our subnet is 10.240.64.0/24, just like we defined in our code.
 
-One simple change to main.tf file that could impact multiple resources. Let's see how Terraform handles this.
+Suppose we need to update the configuration of one of our resources - let's say something as foundational as the CIDR block of our VPC, or one of the subnets of our VPC. 
+
+Now, hopefully this isn't a change you'll find yourself making often. Defining address spaces in the cloud, and defining them correctly, is a critical early stage exercise of a successful cloud migration. You don't want to be in the business of updating CIDR blocks after you're up and running in the cloud - it's bound to create issues, overlap with address spaces in on-premises networks, or, in our case, cause issues with dependent cloud resources.
+
+But, for the purposes of this exercise, let's update the CIDR block of our subnet to demonstrate how Terraform handles dependent resources.
+
+We'll change the CIDR block of the subnet in ```main.tf``` as shown below. Change the value of the ```ipv4_cidr_block``` attribute of the ```ibm_is_subnet``` resource named ```example``` to ```10.240.64.0/18```. You can copy the code below (including the comments), replacing the original ```ibm_is_subnet``` resource if you'd like. Or simply change ```/24``` to ```/18```.
 
 ```
 resource "ibm_is_subnet" "example" {
@@ -103,7 +103,9 @@ resource "ibm_is_subnet" "example" {
 }
 ```
 
-```terraform plan```
+After making this change, let's rerun the ```terraform plan``` command to simulate how Terraform would handle these changes.
+
+Analyzing the output, we'll first see that Terraform refreshes the state of each resource stored in the Terraform state. Terraform first checks to see if any changes to our cloud resources were made outside of Terraform (if there has been any configuration drift).
 
 ```
 ibm_resource_group.example: Refreshing state... [id=f8b67f59696d4a4e8943cfea689492c7]
@@ -115,11 +117,11 @@ ibm_is_security_group_rule.example2: Refreshing state... [id=r006-0beee3f9-5f15-
 ibm_is_security_group_rule.example1: Refreshing state... [id=r006-0beee3f9-5f15-4262-bc05-7c899dff1630.r006-8a90622c-50a2-45d5-8dd4-1df5d1a54959]
 ibm_is_security_group_rule.example: Refreshing state... [id=r006-0beee3f9-5f15-4262-bc05-7c899dff1630.r006-2dd4851f-b17f-432e-81ad-0492b86d77bc]
 ibm_is_instance_template.example: Refreshing state... [id=0727-3cbab154-a94e-4d1e-a76c-c1c20182047f]
+```
 
-Terraform used the selected providers to generate the following execution plan. Resource actions are indicated with the following
-symbols:
--/+ destroy and then create replacement
+We'll then notice that, due to this one simple change, terraform needs to replace our instance template, as well as the subnet itself. Your terminal output may look different, as I've trimmed the response here.
 
+```
 Terraform will perform the following actions:
 
   # ibm_is_instance_template.example must be replaced
@@ -138,41 +140,13 @@ Terraform will perform the following actions:
         ] -> (known after apply)
         # (6 unchanged attributes hidden)
 
-      ~ boot_volume {
-          + encryption                       = (known after apply)
-            name                             = "example-boot-volume"
-          ~ profile                          = "general-purpose" -> (known after apply)
-          ~ size                             = 100 -> (known after apply)
-          ~ tags                             = [] -> (known after apply)
-            # (1 unchanged attribute hidden)
-        }
-
-      + metadata_service {
-          + enabled            = (known after apply)
-          + protocol           = (known after apply)
-          + response_hop_limit = (known after apply)
-        }
-
-      ~ primary_network_interface {
-          ~ name                 = "huntress-audio-unsightly-viability" -> (known after apply)
-          + primary_ipv4_address = (known after apply)
-          ~ subnet               = "0727-b68aad4e-3bd1-4857-82f4-db5303d3df04" -> (known after apply) # forces replacement
-            # (2 unchanged attributes hidden)
-
-          ~ primary_ip {
-              + address     = (known after apply)
-              ~ auto_delete = false -> (known after apply)
-              + name        = (known after apply)
-              + reserved_ip = (known after apply)
-            }
-        }
+        ..........
     }
 
   # ibm_is_subnet.example must be replaced
 -/+ resource "ibm_is_subnet" "example" {
       ~ access_tags                  = [] -> (known after apply)
       ~ available_ipv4_address_count = 251 -> (known after apply)
-      ~ id                           = "0727-b68aad4e-3bd1-4857-82f4-db5303d3df04" -> (known after apply)
       ~ ipv4_cidr_block              = "10.240.64.0/24" -> "10.240.64.0/18" # forces replacement
         name                         = "tf-basics-subnet"
       ~ network_acl                  = "r006-6888995e-1fbc-4a51-9d3f-3a6ecac42a42" -> (known after apply)
@@ -180,10 +154,6 @@ Terraform will perform the following actions:
       ~ resource_controller_url      = "https://cloud.ibm.com/vpc-ext/network/subnets" -> (known after apply)
       ~ resource_group               = "bf9d125f31ad41df8f528ff5719ee757" -> (known after apply)
       ~ resource_group_name          = "Default" -> (known after apply)
-      ~ resource_name                = "tf-basics-subnet" -> (known after apply)
-      ~ resource_status              = "available" -> (known after apply)
-      ~ routing_table                = "r006-2fce0ff3-9ceb-41c2-b1e1-2db595920f4a" -> (known after apply)
-      ~ status                       = "available" -> (known after apply)
       ~ tags                         = [] -> (known after apply)
       ~ total_ipv4_address_count     = 256 -> (known after apply)
         # (3 unchanged attributes hidden)
@@ -192,7 +162,15 @@ Terraform will perform the following actions:
 Plan: 2 to add, 0 to change, 2 to destroy.
 ```
 
-```terraform apply```
+Notice Terraform's verbiage, and how our one change "forces replacement" of the subnet itself (and the instance template), as shown in the terminal output.
+
+```
+~ ipv4_cidr_block = "10.240.64.0/24" -> "10.240.64.0/18" # forces replacement
+```
+
+Just for fun, let's go ahead and apply the change with the ```terraform apply``` command, then we'll wrap up with some final commentary.
+
+As our terraform plan alluded to, our change will force the destruction and recreation of our subnet and instance template.
 
 ```
 ibm_is_instance_template.example: Destroying... [id=0727-3cbab154-a94e-4d1e-a76c-c1c20182047f]
@@ -208,3 +186,11 @@ ibm_is_instance_template.example: Creation complete after 2s [id=0727-a47290d2-1
 
 Apply complete! Resources: 2 added, 0 changed, 2 destroyed.
 ```
+
+Had we made these changes directly in the cloud portal, we would have had to complete each of these steps manually. Subnet CIDR blocks and instance templates are immutable resources, and cannot be modified. 
+
+Without Terraform, we would have had to manually delete each resource (in the proper order) and recreate it, or write our own automation to do so. Keep in mind once again that this is an extremely simple set of cloud resources. 
+
+Conducting such tasks manually in production is not an option, and writing custom automation could be cumbersome and could require extensive testing. Terraform, on the other hand, handles dependent resources for us, and would throw appropriate error messages in the event that we attempt to make a change that isn't allowed.
+
+Be sure to run a final ```terraform destroy``` command to clean up the environment.

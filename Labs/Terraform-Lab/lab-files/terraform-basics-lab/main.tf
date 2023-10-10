@@ -17,14 +17,6 @@ provider "ibm" {
 # export TF_VAR_api_key=YOUR_IBM_CLOUD_API_KEY
 variable "api_key" {}
 
-variable "public_key_file"  {
-    default = "~/.ssh/id_rsa.pub" 
-}
-
-locals {
-  public_key    = file(pathexpand(var.public_key_file))
-}
-
 # Resources
 
 resource "ibm_is_security_group" "example" {
@@ -71,7 +63,7 @@ resource "ibm_is_subnet" "example" {
 
 resource "ibm_is_ssh_key" "shared_ssh_key" {
   name       = "terraform-test-key"
-  public_key = local.public_key
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCKVmnMOlHKcZK8tpt3MP1lqOLAcqcJzhsvJcjscgVERRN7/9484SOBJ3HSKxxNG5JN8owAjy5f9yYwcUg+JaUVuytn5Pv3aeYROHGGg+5G346xaq3DAwX6Y5ykr2fvjObgncQBnuU5KHWCECO/4h8uWuwh/kfniXPVjFToc+gnkqA+3RKpAecZhFXwfalQ9mMuYGFxn+fwn8cYEApsJbsEmb0iJwPiZ5hjFC8wREuiTlhPHDgkBLOiycd20op2nXzDbHfCHInquEe/gYxEitALONxm0swBOwJZwlTDOB7C6y2dzlrtxr1L59m7pCkWI4EtTRLvleehBoj3u7jB4usR"
 }
 
 resource "ibm_resource_group" "example" {

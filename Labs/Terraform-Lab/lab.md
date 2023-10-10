@@ -24,9 +24,11 @@ If you elect to use a manual copy and paste - create a file named ```main.tf``` 
 
  If you prefer to clone the repository, you can do so with this command: ```git clone https://github.com/atugman/IBM-Cloud.git```. Afterwards, navigate to the appropriate subdirectory with ```cd IBM-Cloud/Labs/Terraform-Lab/lab-files/terraform-basics-lab```.
 
-### Run terraform init
+### Terraform init
 
-Once you've copied the code via either method and are in the appropriate directory, naturally we'll start by running the ```terraform init``` command from our local terminal. A successful output will include verbiage along the lines of: 
+Once you've copied the code via either method and are in the appropriate directory, naturally we'll start by running the ```terraform init``` command from our local terminal (make sure you're still in the directory containing ```main.tf```).
+
+A successful output will include verbiage along the lines of: 
 
 ```
 Terraform has been successfully initialized!

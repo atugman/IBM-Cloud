@@ -34,22 +34,22 @@ You've all probably heard the buzzwords around IaC. Strict configurations (same 
 
 Strictly (buzz word intended) in terms of provisioning tools (not branching out into the realm of configuration management tools like Ansible), Terraform has arguably become the gold standard across enterprises, and rightfully so. 
 
-I've seen many SREs who handle a lot of provisioning through Python and other custom-written applications, and they did so exceedingly well. Their programs met all of the needs of their given enterprises, but don't have as much reuse value as something like Terraform. 
+I've seen many SREs who handle a lot of cloud infrastructure provisioning through Python and other custom-written applications, and they did so exceedingly well. Their programs met all of the needs of their given enterprises, but don't have as much reuse value as something like Terraform. 
 
 One of the hardest tasks in software engineering is to pick up someone else's code and start using it, much less maintaining and patching it as if it were your own. HashiCorp language is not a complete exception to this phenomenon, but it will significantly reduce the time to transfer ownership of a codebase (say a developer leaves a company) from one developer or team to another because of this "standardization."
 
-A large part of this "standardization" stems from the support of Terraform providers, who are affording deployers of their software a standard way of interacting with their API - by proxy of Terraform via HCL.
+A large part of this "standardization" stems from the support of Terraform providers, who are affording deployers of their software a standard way of interacting with their APIs - via Terraform.
 
 Perhaps the aforementioned SRE finds HCL a bit restrictive, or overly prescriptive in terms of functionality. Maybe they aren't used to writing HCL, or otherwise prefers Python because it aligns to their current skill set. After all, debugging in Terraform requires knowledge of Terraform itself.
 
 I empathize with this SRE because they are likely automating many of their other daily tasks (or tasks across their enterprise) in Python or other similar programming languages. Why not provision infrastructure using the same skills?
 
-Well, we've talked about the transfer of ownership of a codebase, but that's probably not the biggest thing on *this* SRE's mind. However, I would urge this SRE to consider everything that Terraform would take off of *their* plate as well.
+Well, we've talked about the transfer of ownership of a codebase, but that's probably not the biggest thing on the SRE's mind. However, I would urge the SRE to consider everything that Terraform would take off of *their* plate as well.
 
-The effort to learn HCL will pay big dividends faster than you think. It's easy enough to pick a language out of a hat, and find an SDK that enables you to quickly start writing code to create, destroy and update your cloud infrastructure. 
+The effort to learn HCL will pay big dividends faster than you think. It's easy enough to pick a language out of a hat and find an SDK that enables you to quickly start writing code to create, destroy and update your cloud infrastructure. 
 
-But, you could be missing out on state management capabilities (which are foundational to Terraform), as well as the built-in capabilities that Terraform uses to manage dependencies between cloud resources. And plenty of other valuable features that would take a larger programming (not to mention software testing) effort to implement in another language besides HCL.
+But, you could be missing out on state management capabilities (which are foundational to Terraform), built-in capabilities that Terraform uses to manage dependencies between cloud resources, and plenty of other valuable features that would take a larger programming effort to implement in other languages besides HCL.
 
-What if I used Python to create 6 VPCs that each contain between 18-22 VMs that were each created from one of 8 different instance templates and are part of one of 5 different scaling groups? Then, a new requirement arises where some infrastructure configurations need to be updated. Think of all of the resources that depend on each other in this type of architecture.
+What if I used Python to create 6 VPCs, each with 18-22 VMs that were created from one of 8 different instance templates and are part of one of 5 different scaling groups? Then, a new requirement arises where some infrastructure configurations need to be updated. Think of all of the resources that depend on each other in this type of architecture, and the programming effort required to properly manage this environment entirely through code.
 
-Let's take a look at a very simple example of this phenomenon through a [quick, simple lab](https://github.com/atugman/IBM-Cloud/blob/main/Labs/Terraform-Lab/lab.md)
+Let's take a look at a very simple example of this phenomenon through a [quick, simple lab](https://github.com/atugman/IBM-Cloud/blob/main/Labs/Terraform-Lab/lab.md).

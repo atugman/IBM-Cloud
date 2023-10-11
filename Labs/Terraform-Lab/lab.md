@@ -42,7 +42,9 @@ should now work.
 
 Next, let's **securely** use our IBM Cloud credentials (API key) via Terraform Environment Variables. Terraform Environment Variables (just like traditional Linux environmental variables) are extremely helpful in preventing us form exposing credentials in code. Execute the following command in your terminal, supplying your IBM Cloud API key.
 
-```export TF_VAR_api_key=YOUR_IBM_CLOUD_API_KEY```
+```bash
+export TF_VAR_api_key=YOUR_IBM_CLOUD_API_KEY
+```
 
 ### Architecture
 
@@ -115,7 +117,7 @@ But, for the purposes of this exercise, let's update the CIDR block of our subne
 
 We'll change the CIDR block of the subnet in ```main.tf``` as shown below. Change the value of the ```ipv4_cidr_block``` attribute of the ```ibm_is_subnet``` resource named ```example``` to ```10.240.64.0/18```. You can copy the code below (including the comments), replacing the original ```ibm_is_subnet``` resource if you'd like. Or simply change ```/24``` to ```/18```.
 
-```
+```terraform
 resource "ibm_is_subnet" "example" {
   name            = "tf-basics-subnet"
   vpc             = ibm_is_vpc.example.id

@@ -1,4 +1,4 @@
-Lab: Basic Handling of Dependent Resources in Terraform
+Lab Exercise: Basic Handling of Dependent Resources in Terraform
 ========
 
 ### Introduction
@@ -108,12 +108,6 @@ resource "ibm_is_subnet" "example" {
 ```
 
 The most important thing to note is that the CIDR block of our subnet is 10.240.64.0/24, just like we defined in our code.
-
-### Optional, Extra Credit
-
-Login to the IBM Cloud portal, and make some changes to the rules of your security group, named ```tf-basics-security-group```. Via the cloud portal, try changing the port numbers of one of the rules, and deleting another rule altogether.
-
-Run a ```terraform plan```
 
 ### Updating Terraform Configurations
 

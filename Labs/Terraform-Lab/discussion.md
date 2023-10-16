@@ -1,4 +1,4 @@
-Notes from the HashiCorp Certified: Terraform Associate (003) Certification Exam
+Notes from the HashiCorp Certified: Terraform Associate (003) Exam
 ==============
 
 I recently cleared the HashiCorp Certified: Terraform Associate (003) exam. Here are a few takeaways from my experience with the exam, my experience with Terraform as a whole, and (optionally) a couple of lab exercises.

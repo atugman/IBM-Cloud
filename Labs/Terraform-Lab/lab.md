@@ -1,4 +1,4 @@
-Lab: The Value of Terraform - Basic Handling of Dependent Resources
+Lab: Basic Handling of Dependent Resources in Terraform
 ========
 
 ### Introduction
@@ -7,7 +7,7 @@ Consider the following prerequisites, although feel free to continue reading eve
 - IBM Cloud Account & API Key
 - Local Terraform installation
 
-Newer terraformers *may* feel as though some foundational concepts are brushed over, although I've tried to add some verbiage to address this.
+Newer terraformers may feel as though some foundational concepts are brushed over, although I've tried to add some verbiage to address this.
 
 We'll use the IBM Cloud Terraform provider to walk through this simple exercise.
 
@@ -85,7 +85,9 @@ So, we have our initial cloud resources deployed, albeit, for the purposes of th
 
 ### Terraform state
 
-You should notice a new file named ```terraform.tfstate```. Terraform stores its state in this JSON file. Feel free to explore the contents of this file.
+You should notice a new file named ```terraform.tfstate```. Terraform stores its state in this JSON file. Feel free to explore the contents of this file. 
+
+Think of the terraform state as a representation of the configurations of deployed resources (or rather, the resources terraform *thinks* are deployed, and their configurations, at a given point in time). Your terraform state will never be updated solely based on a change in one of your code files, but rather after running a ```terraform apply```, a ```terraform plan``` or the less commonly used ```terraform refresh```.
 
 We can also output the contents of our state using the ```terraform state show``` command, followed by desired arguments. Let's run the following command to view the current state of our subnet: ```terraform state show 'ibm_is_subnet.example'```, which should result in a terminal output similar to the following.
 
@@ -105,7 +107,13 @@ resource "ibm_is_subnet" "example" {
 }
 ```
 
-The most important thing to note here is that, as far as Terraform is concerned, the CIDR block of our subnet is 10.240.64.0/24, just like we defined in our code.
+The most important thing to note is that the CIDR block of our subnet is 10.240.64.0/24, just like we defined in our code.
+
+### Optional, Extra Credit
+
+Login to the IBM Cloud portal, and make some changes to the rules of your security group, named ```tf-basics-security-group```. Via the cloud portal, try changing the port numbers of one of the rules, and deleting another rule altogether.
+
+Run a ```terraform plan```
 
 ### Updating Terraform Configurations
 
@@ -219,4 +227,22 @@ Conducting such tasks manually in production is not an option, and writing custo
 
 Terraform, on the other hand, generally handles dependent resources for us, and would throw appropriate error messages in the event that we attempt to make a change that isn't allowed. One last thing to keep in mind - the Terraform [depends_on](https://developer.hashicorp.com/terraform/language/meta-arguments/depends_on) argument, which can be used to further define which resources could be impacted by changes to other resources. We won't take a deep dive of ```depends_on``` here, but know that, even when this argument is necessary, it's still far more simplistic than writing our own custom automation as alluded to above.
 
-Thank you for your time! Be sure to run a final ```terraform destroy``` command to clean up the environment.
+### Optional, Extra Credit Exercise
+
+We talked a bit about terraform state earlier in the blog - here is one final simple exercise to illustrate another key functionality of Terraform.
+
+Login to the IBM Cloud portal and make some changes to the rules of your security group, named ```tf-basics-security-group```. Try changing the port numbers of one of the rules, and deleting another rule altogether, directly from the IBM Cloud portal.
+
+How do you think Terraform will respond to changing our cloud resources *outside* the realm of Terraform?
+
+Run a ```terraform plan``` and you should see a message similar to:
+
+```
+Plan: 1 to add, 1 to change, 0 to destroy.
+```
+
+Terraform is telling us that, on the next ```terraform apply```, it will recreate the security group rule that was deleted, and change the other security group rule *back* to the configuration that was declared in your code.
+
+### Terraform destroy
+
+Be sure to run a final ```terraform destroy``` command (and confirm it) to clean up the environment.

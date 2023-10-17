@@ -11,21 +11,22 @@ After completion of this lab, you should be able to:
 - Articulate the best use cases for dictionaries
 
 ## Prerequisites
-Basic Python knowledge is helpful, but not required
-Local Python 3 Installation
-Local Visual Studio Code (or similar IDE) Installation
+- Basic Python knowledge is helpful, but not required
+- Local Python 3 Installation
+- Local Visual Studio Code (or similar IDE) Installation
 
-## Step 1: Create our environment
+## Create our environment
 
 Let's start by creating a simple Python environment that we can work in.
 
-Execute the following command in your terminal to create our .py file:
+Execute the following commands in your terminal to create our .py file:
 
 ```bash
+mkdir dictionaries_lab && cd dictionaries_lab
 touch dictionaries.py
 ```
 ------------
-Copy and paste the following code into your IDE.
+Copy and paste the following code into your dictionaries.py file.
 
 ```python
 # print hello world to the console!
@@ -45,12 +46,11 @@ If working properly, you should see a simple "hello world!" message printed to t
 There are a couple of simple ways to do this.
 
 ```python
-my_dict = {}
-# or
+my_dict = {} # or
 my_dict = dict()
 ```
 
-Or you could even prepopulate some data into your dictionary. Let's use this approach for the sake of this example. Ignore the 3 lines above this, and copy and paste the 5 lines below into the dictionaries.py file located in your IDE. You can also delete the "hello world" function used previously.
+Or you could even prepopulate some data into your dictionary. Let's use this approach for the sake of this example. Ignore the 2 lines above this, and copy and paste the 5 lines below into the dictionaries.py file located in your IDE. You can also delete the "hello world" function used previously.
 
 ```python
 my_dict = {
@@ -63,7 +63,7 @@ Save the .py file, and execute the program once again:
 ```bash
 python dictionaries.py
 ```
-The program output should be the string:`sample_value`
+The program output should be the string: `sample_value`
 
 ## Updating Dictionaries (Existing Entries)
 
@@ -105,7 +105,7 @@ Let's add a brand new entry to our Python dictionary and see what it looks like.
 my_dict["new_key"] = "a new value"
 print(my_dict)
 ```
-Your full program should now look like this (notice I commented out the previous print statements):
+Your full program should now look like this (notice the previous print statements are commented out):
 
 ```python
 my_dict = {
@@ -175,11 +175,11 @@ Let's take note of a couple of *key* items in our code (pun intended!):
 
 Don't worry if everything in this section doesn't click right away. The purpose is to show you another practical use case for dictionaries in the real world.
 
-Let's revisit our teacher/testing example, but a bit more complex. Let's say that I offered my students up to 2 points (out of 100) of extra credit toward their final course grade at the end of the semester. For the sake of an example, let's assume that all 5 of our students achieved the full 2 points of extra credit. On the surface, this could operate very similarly to the last example, where we are merely adding 2 points to a score. However, we will certainly have had more than one assignment throughout the semester, and we need a way to track scores for multiple assignments, for multiple students.
-
-Here is a quick, and relatively dirty way we could do this. Unless you'd like a bit of extra practice, don't worry about copying and pasting the code block below, as we are going to use a cleaner example next. 
+Let's revisit our teacher/testing example, but a bit more complex. Surely our students have had more than one assignment throughout the semester, thus we'll need a way to track scores for multiple assignments, for multiple students.
 
 But the *value* of a given *key* in our dictionary does not have to be a simple string or integer, as it has been throughout this tutorial. Let's use a list to store each of the scores of 5 different assignments for each of our 5 students:
+
+Replace the contents of your dictionaries.py file with the code block below.
 
 ```python
 student_scores_all_assignments = {
@@ -195,7 +195,8 @@ for key,values in student_scores_all_assignments.items():
     print(str(key) + "'s final average: " + str(average))
 ```
 
-In short, the program in the code block above is calculating the final course grades for each student on the fly, and printing each one to the console. The output of program should read:
+In short, the program in the code block above is calculating the final course grades for each student (based on 5 individual assignment scores), and printing each one to the console. The output of program should read:
+
 ```html
 Bob's final average: 85.8
 Sally's final average: 87.2
@@ -210,130 +211,14 @@ Let's move on to the last section to implement a better approach.
 
 ## Dictionaries within Dictionaries
 
-So, we're actually going to use *another dictionary*, and maybe even *ANOTHER* dictionary as the *values* in our first dictionary (and subsequent dictionaries). Like I said, if this all sounds a bit confusing, or like some sort of weird dictionary inception movie for Python nerds, don't worry. Let's take this one step at a time.
+We're actually going to use *another dictionary*, and maybe even *ANOTHER* dictionary to represent the *values* in our first dictionary (and subsequent dictionaries). Like I said, if this all sounds a bit confusing, or like some sort of weird dictionary inception movie for Python nerds, don't worry. Let's take this one step at a time.
 
 First, create a new file called data.py:
 ```bash
 touch data.py
 ```
 
-And paste the following code into data.py:
-```python
-student_scores_all_assignments = {
-    "Bob":{
-        "Test 1":{
-            "Score":72,
-            "Weight":20
-        },
-        "Test 2":{
-            "Score":95,
-            "Weight":30
-        },
-        "Test 3":{
-            "Score":81,
-            "Weight":10
-        },
-        "Project 1":{
-            "Score":95,
-            "Weight":30
-        },
-        "Project 2":{
-            "Score":93,
-            "Weight":10
-        }
-    },
-    "Sally":{
-        "Test 1":{
-            "Score":72,
-            "Weight":20
-        },
-        "Test 2":{
-            "Score":95,
-            "Weight":30
-        },
-        "Test 3":{
-            "Score":81,
-            "Weight":10
-        },
-        "Project 1":{
-            "Score":95,
-            "Weight":30
-        },
-        "Project 2":{
-            "Score":93,
-            "Weight":10
-        }
-    },
-    "Bill":{
-        "Test 1":{
-            "Score":78,
-            "Weight":20
-        },
-        "Test 2":{
-            "Score":72,
-            "Weight":30
-        },
-        "Test 3":{
-            "Score":81,
-            "Weight":10
-        },
-        "Project 1":{
-            "Score":95,
-            "Weight":30
-        },
-        "Project 2":{
-            "Score":93,
-            "Weight":10
-        }
-    },
-    "Fred":{
-        "Test 1":{
-            "Score":92,
-            "Weight":20
-        },
-        "Test 2":{
-            "Score":72,
-            "Weight":30
-        },
-        "Test 3":{
-            "Score":81,
-            "Weight":10
-        },
-        "Project 1":{
-            "Score":95,
-            "Weight":30
-        },
-        "Project 2":{
-            "Score":93,
-            "Weight":10
-        }
-    },
-    "Ted":{
-        "Test 1":{
-            "Score":98,
-            "Weight":20
-        },
-        "Test 2":{
-            "Score":72,
-            "Weight":30
-        },
-        "Test 3":{
-            "Score":81,
-            "Weight":10
-        },
-        "Project 1":{
-            "Score":95,
-            "Weight":30
-        },
-        "Project 2":{
-            "Score":93,
-            "Weight":10
-        }
-    },
-}
-```
-
-## Dictionaries within Dictionaries (con't)
+And copy the code from [this file](https://github.com/atugman/IBM-Cloud/blob/main/Labs/Python/Dictionaries/data.py) into your local data.py file.
 
 Let's start from scratch in our dictionaries.py file. Go ahead and remove any existing lines of code, and let's start small to understand how to access all of this data stored in our dictionary (in our data.py file), and eventually we will store the final student grades in a logical place.
 
@@ -390,7 +275,7 @@ Now we are in a position where we can programmatically access the score and weig
         points_for_assignment = values['Score'] * (values['Weight'] / 100)
         print("Equivalent to",points_for_assignment,"points out of",values['Weight'])
 ```
-Note that these should be lines 8 and 9, and should be placed within the second for loop, then execute the program.
+Note that these should be lines 8 and 9 (and should be placed within the second for loop). Then execute the program.
 
 ```bash
 python dictionaries.py
@@ -398,15 +283,41 @@ python dictionaries.py
 
 The program output will be longer than the sample below, but now we can see how much each assignment was worth out of the student's total score.
 
-```html
-...
+```
 Ted: Project 2 {'Score': 93, 'Weight': 10}
 Equivalent to 9.3 points out of 10
 ```
 
-> Take note of how we accessed the data in our dictionary in line 8. The syntax is as follows: `dictionary_name[key_name]`. The key name `Score` is in quotations in our code merely to represent that our key is a string.
+> Take note of how we accessed the data in our dictionary in line 8. The syntax is as follows: `dictionary_name[key_name]`. So why is our dictionary name `values` on line 8?
 ```python
         points_for_assignment = values['Score'] * (values['Weight'] / 100)
+```
+
+> In our nested for loop, we're accessing a dictionary within a dictionary. Taking a look at data.py, we're accessing the `Score` and `Weight` properties for each assignment for each student. Below is an abbreviated version of data.py with comments to illustrate this.
+
+```python
+# from data.py
+student_scores_all_assignments = {
+    "Bob":{ # <--- Data being accessed in the first for loop (each student)
+        "Test 1":{ # <--- Data being accessed in the inner for loop (each assignment)
+            "Score":72, # <---- Property available (inner for loop)
+            "Weight":20 # <---- Property available (inner for loop)
+        },
+        "Test 2":{
+            "Score":95,
+            "Weight":30
+        },
+# ......
+    "Sally":{ # <--- Data being accessed in the first for loop (each student)
+        "Test 1":{ # <--- Data being accessed in the inner for loop (each assignment)
+            "Score":72, # <---- Property available (inner for loop)
+            "Weight":20 # <---- Property available (inner for loop)
+        },
+        "Test 2":{ # <--- Data being accessed in the inner for loop (each assignment)
+            "Score":95, # <---- Property available (inner for loop)
+            "Weight":30 # <---- Property available (inner for loop)
+        },
+# ......
 ```
 
 Let's jump to the next section for our final implementation.

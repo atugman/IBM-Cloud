@@ -27,13 +27,13 @@ Execute the following commands in your terminal to create our .py file:
 mkdir dictionaries_lab && cd dictionaries_lab
 touch dictionaries.py
 ```
-------------
+
 Copy and paste the following code into your dictionaries.py file.
 
 ```python
 print('hello world!')
 ```
-------------
+
 Execute the following command in your terminal to ensure your python environment is working. We'll be using this command many times throughout the exercise. Note that anytime you're asked to do something along the lines of "execute the program," this simply means to run the command below.
 
 ```bash
@@ -42,7 +42,7 @@ python dictionaries.py
 
 If working properly, you should see a simple "hello world!" message printed to the console of your IDE.
 
-## Create the data structure
+## Create the Data Structure
 
 There are a couple of simple ways to do this:
 

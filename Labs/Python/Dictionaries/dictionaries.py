@@ -31,14 +31,20 @@ for student_names,another_dictionary in student_scores_all_assignments.items():
     # the updated dictionary will now have a "Final Grade" key for each student,
     # where we've assigned the score that we calculated for them above.
     student_scores_all_assignments[student_names]['Final Grade'] = student_total_course_score
+    
+    # Lastly, let's print each student's final score as we iterate through the updated data structure
+    print(student_names + "'s Final Score: " + str(student_scores_all_assignments[student_names]['Final Grade']))
 
-# Lastly, let's print our updated final dictionary (that we pulled in from data.py)
-# You should see each student's final score listed.
+# Optionally, uncomment line 47 to print our final updated dictionary (that we originally pulled in from data.py)
+# The output won't be super clean (without adding additional libraries such as pprint,
+# But you should see each student's final score listed.
+
 # Take note: the actual data structure in data.py was NOT updated. 
-# We are merely printing an instance of this object that we updated during the execution
-# of our program. In the next module, we will work on updating files with Python
+# We are merely printing an instance of this object that we updated during the execution of our program.
+# In the next module, we will work on updating files with Python 
 # so that our data will persist across multiple program executions!
-print(student_scores_all_assignments)
+
+#print(student_scores_all_assignments)
 
 
 # (Optional) 

@@ -46,8 +46,6 @@ for student_names,another_dictionary in student_scores_all_assignments.items():
 
 #print(student_scores_all_assignments)
 
-
-# (Optional) 
 # Instead of simply printing our new dictionary to the console,
 # Let's write it to a file using a few more lines of Python.
 
@@ -55,27 +53,23 @@ for student_names,another_dictionary in student_scores_all_assignments.items():
 
 # Open/create a file with write ("w") permissions
 new_python_file = open("updated_data.py","w")
-# Pass our new dict to the write() method
-# Notice we convert our dictionary to a string to be written
+# Pass our new dictionary to the write() method - notice we convert our dictionary to a string to be written
 new_python_file.write(str(student_scores_all_assignments))
 # Close the file
 new_python_file.close()
 # Review the updated_data.py file to see the results!
 
-
-# In the second example below, we will use the JSON library
-# to write our new dictionary to a .json file. 
-# Notice the new import statement at the top of this file - "import json"
+# In the next example below, we will use the JSON library to write our new dictionary to a .json file. 
+# Notice the new import statement at the top of this file: "import json"
 
 updated_dict_json = json.dumps(
-    # pass our new dictionary once again
-    student_scores_all_assignments,
-    # extra parameters that make the file look pretty!
-    # These parameters were taken directly from Python docs for the json library:
-    # https://docs.python.org/3/library/json.html
-    sort_keys=True,
-    indent=4,
-    separators=(',', ': ')
+        # pass our new dictionary once again
+        student_scores_all_assignments,
+        # Add extra parameters that make the file look pretty!
+        # These were taken directly from Python docs for the json library: https://docs.python.org/3/library/json.html
+        sort_keys=True,
+        indent=4,
+        separators=(',', ': ')
     )
 
 # Just like the first example, we open/create a file

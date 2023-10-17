@@ -6,12 +6,14 @@ Python dictionaries are a powerful data structure that you can use to look up in
 In this lab, we'll take a quick look at Python dictionaries, how to create them, update them, otherwise interact with them, and why they might be useful in various settings.
 
 After completion of this lab, you should be able to:
-- Create a dictionary in Python
-- Update a dictionary in Python
+- Create and update Python dictionaries
+- Iterate over Python dictionaries
+- Write to files using Python
+- Write a Python dictionary to a JSON file
 - Articulate the best use cases for dictionaries
 
 ## Prerequisites
-- Basic Python knowledge is helpful, but not required
+- Basic Python knowledge is helpful, but not required to complete these (guided) exercises
 - Local Python 3 Installation
 - Local Visual Studio Code (or similar IDE) Installation
 
@@ -29,11 +31,10 @@ touch dictionaries.py
 Copy and paste the following code into your dictionaries.py file.
 
 ```python
-# print hello world to the console!
 print('hello world!')
 ```
 ------------
-Execute the following command in your terminal to ensure your python environment is working. 
+Execute the following command in your terminal to ensure your python environment is working. We'll be using this command many times throughout the exercise. Note that anytime you're asked to do something along the lines of "execute the program," this simply means to run the command below.
 
 ```bash
 python dictionaries.py
@@ -41,16 +42,16 @@ python dictionaries.py
 
 If working properly, you should see a simple "hello world!" message printed to the console of your IDE.
 
-## Step 2: Create the data structure
+## Create the data structure
 
-There are a couple of simple ways to do this.
+There are a couple of simple ways to do this:
 
 ```python
 my_dict = {} # or
 my_dict = dict()
 ```
 
-Or you could even prepopulate some data into your dictionary. Let's use this approach for the sake of this example. Ignore the 2 lines above this, and copy and paste the 5 lines below into the dictionaries.py file located in your IDE. You can also delete the "hello world" function used previously.
+Or you could prepopulate some data into your dictionary. Let's use this approach for the sake of this example. Ignore the 2 lines above this, and copy and paste the 5 lines below into the dictionaries.py file located in your IDE. You can also delete the "hello world" function used previously.
 
 ```python
 my_dict = {
@@ -97,12 +98,12 @@ different value
 
 Notice we printed the value of the `sample key`at two different points in time: first using our initial provided value, `sample_value`, then again using the new value of `sample_key` after our update: `different_value`.
 
-## Updating Dictionaries (New Entries)
+## Updating Dictionaries (Adding New Entries)
 
 Let's add a brand new entry to our Python dictionary and see what it looks like. Add the following lines to your existing Python program. You can comment out previous print statements for a condensed output.
 
 ```python
-my_dict["new_key"] = "a new value"
+my_dict["new_key"] = "yet_another_different_value"
 print(my_dict)
 ```
 Your full program should now look like this (notice the previous print statements are commented out):
@@ -118,7 +119,7 @@ my_dict["sample_key"] = "different_value"
 
 #print(my_dict["sample_key"])
 
-my_dict["new_key"] = "a new value"
+my_dict["new_key"] = "yet_another_different_value"
 print(my_dict)
 ```
 
@@ -127,7 +128,7 @@ Your output, which is a full view of your dictionary after updating one existing
 `
 my_dict = {
 	"sample_key":"different_value",
-	"new_key":"a new value"
+	"new_key":"yet_another_different_value"
 }
 `
 
@@ -171,11 +172,9 @@ Let's take note of a couple of *key* items in our code (pun intended!):
 - Lastly, notice that we are programmatically passing in the *keys* and *values* to be updated:
 -	student_scores[key] = value + 3
 
-## A slightly more complex example
+## A (Slightly) More Complex Example
 
-Don't worry if everything in this section doesn't click right away. The purpose is to show you another practical use case for dictionaries in the real world.
-
-Let's revisit our teacher/testing example, but a bit more complex. Surely our students have had more than one assignment throughout the semester, thus we'll need a way to track scores for multiple assignments, for multiple students.
+Let's revisit our teacher/testing example, but a bit more complex. Surely our students have had more than one assignment throughout the semester, so we'll need a way to track scores for multiple assignments, for multiple students.
 
 But the *value* of a given *key* in our dictionary does not have to be a simple string or integer, as it has been throughout this tutorial. Let's use a list to store each of the scores of 5 different assignments for each of our 5 students:
 
@@ -231,12 +230,8 @@ for keys,values in student_scores_all_assignments.items():
     # in this loop, the keys are student names, and the values are dictionaries
     print(keys,values)
 ```
-Execute the program:
-```bash
-python dictionaries.py
-```
 
-You'll notice your output looks a lot like our full data structure in data.py. The keys of our student_scores_all_assignments dictionary located in data.py are the names of our students, and the values are dictionaries.
+Once you execute the program you'll notice your output looks a lot like our full data structure in data.py. The keys of our student_scores_all_assignments dictionary located in data.py are the names of our students, and the values are dictionaries.
 
 Let's iterate through the dictionaries that we are using for the values of the keys in our student_scores_all_assignments dictionary.
 
@@ -253,7 +248,7 @@ for student_names,another_dictionary in student_scores_all_assignments.items():
 ```
 Execute the program again, and take note of the differences in the output.
 
-Your output will look something like this block below - notice how each iteration (represented by a single line in the output) is a particular assignment, rather than a student, as was the case in the previous output. The student names are only present in the console because I chose to print them here - they are actually from the *original* dictionary.
+Your output will look something like this block below - notice how each iteration (represented by a single line in the output) is a particular assignment, rather than a student, as was the case in the previous output. The student names are only present in the console because we deliberately printed them - they are actually from the *original* dictionary.
 
 ```
 Bob: Test 1 {'Score': 72, 'Weight': 20}
@@ -364,7 +359,7 @@ Execute the program once again through our favorite ```python dictionaries.py```
 
 Now, you should be able to see an additional file - `updated_data.py` - in your IDE. Click into the file and take note of the results! At least our updated data structure is here, but is this file as organized as you'd like for it to be? Let's jump forward and look at one more example of how to write a dictionary to a file in Python.
 
-## Write our Updated Dictionary to a JSON File using Python Libraries
+## Writing our Updated Dictionary to a JSON File using Python Libraries
 
 For our last exercise, your dictionaries.py file should look like [this version of dictionaries.py](https://github.com/atugman/IBM-Cloud/blob/main/Labs/Python/Dictionaries/dictionaries.py). You can simply replace the full contents of your current dictionaries.py file with this code block. Notice that line 2 is now `import json` so that we can use Python's json library. Take a moment to review the last several lines of code (the additions since the last exercise) including the comments.
 

@@ -13,8 +13,15 @@ provider "ibm" {
   ibmcloud_api_key = var.api_key
 }
 
-# export TF_VAR_api_key=<apikey>
+# Run line below in local terminal, supplying IBM Cloud API key
+# export TF_VAR_api_key=your_api_key
 variable "api_key" {}
+
+data "ibm_resource_group" "resource_group" {
+  name = "Default"
+}
+
+// Network
 
 resource "ibm_is_vpc" "vpc1" {
   name = "myvpc"
@@ -25,10 +32,6 @@ resource "ibm_is_subnet" "subnet1" {
   vpc                      = ibm_is_vpc.vpc1.id
   zone                     = "us-south-1"
   total_ipv4_address_count = 256
-}
-
-data "ibm_resource_group" "resource_group" {
-  name = "Default"
 }
 
 resource "ibm_is_public_gateway" "k8s-gw" {
@@ -42,6 +45,8 @@ resource "ibm_is_subnet_public_gateway_attachment" "k8s-gw-attachment" {
   subnet                = ibm_is_subnet.subnet1.id
   public_gateway         = ibm_is_public_gateway.k8s-gw.id
 }
+
+// Cluster
 
 resource "ibm_container_vpc_cluster" "cluster" {
   name              = "mycluster"
@@ -59,6 +64,7 @@ resource "ibm_container_vpc_cluster" "cluster" {
 }
 
 // Worker Pools
+
 resource "ibm_container_vpc_worker_pool" "worker_pool_1" {
   cluster           = ibm_container_vpc_cluster.cluster.id
   worker_pool_name  = "worker_pool_1"
@@ -73,13 +79,6 @@ resource "ibm_container_vpc_worker_pool" "worker_pool_1" {
   labels = {
     label2:"value2"
   }
-  /*
-  taints = [{
-    key="taint1"
-    value="taint_value_1"
-    effect="NoSchedule"
-  }]
-  */
 }
 
 resource "ibm_container_vpc_worker_pool" "worker_pool_2" {
@@ -96,30 +95,9 @@ resource "ibm_container_vpc_worker_pool" "worker_pool_2" {
   labels = {
     label3:"value3"
   }
-  /*
-  taints = [{
-    key="taint2"
-    value="taint_value_2"
-    effect="NoSchedule"
-  }]
-  */
 }
-/*
-resource "ibm_container_vpc_worker_pool" "worker_pool_3" {
-  cluster           = ibm_container_vpc_cluster.cluster.id
-  worker_pool_name  = "worker_pool_3"
-  flavor            = "bx2.2x8"
-  vpc_id            = ibm_is_vpc.vpc1.id
-  worker_count      = 1
-  resource_group_id = data.ibm_resource_group.resource_group.id
-  zones {
-    name      = "us-south-1"
-    subnet_id = ibm_is_subnet.subnet1.id
-  }
-}
-*/
 
-//
+// Monitoring/Logging
 
 resource "ibm_resource_instance" "instance" {
   name     = "TestMonitoring"

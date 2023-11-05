@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: without-affinity
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: without-affinity
+  template:
+    metadata:
+      labels:
+        app: without-affinity
+    spec:
+      nodeSelector:
+        label2: value2
+      containers:
+      - name: nginx
+        image: nginx
+        imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            cpu: "1"
+            memory: "2Gi"

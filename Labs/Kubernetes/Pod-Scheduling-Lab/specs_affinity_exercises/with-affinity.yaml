@@ -5,7 +5,7 @@ metadata:
   labels:
     app: nginx
 spec:
-  replicas: 5
+  replicas: 8
   selector:
     matchLabels:
       app: nginx
@@ -20,8 +20,8 @@ spec:
         imagePullPolicy: IfNotPresent
         resources:
           requests:
-            cpu: "1"
-            memory: "2Gi"
+            cpu: ".4"
+            memory: "1Gi"
       affinity:
         nodeAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:

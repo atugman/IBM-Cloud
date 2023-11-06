@@ -36,7 +36,7 @@ Or, instead of the last line above, remove the originally cloned repo for your m
 
 ## Labels and Taints
 
-#### Validate your Node Labels
+> #### Validate your Node Labels
 
 If you used the provided terraform to create your IKS cluster, your nodes will already be labeled properly for these exercises.
 
@@ -80,7 +80,7 @@ For example, the output of ```echo $node1``` should match the value of the "NAME
 
 > Remember: **Make sure you're working in a test cluster,** particularly if you're a bit new to these concepts! Several of the exercises throughout this guide could have an impact on other pods in the cluster, so it's important to make sure this cluster (or *minimally* these 3 nodes) are not slated to host any important applications.
 
-#### Deploy Pods with Node Selectors
+> #### Deploy Pods with Node Selectors
 
 Next, let's deploy a few pods, each with a unique node selector. Take a moment to review the contents of the 3 .yaml files in the /specs_taints_exercises directory. Each file is nearly identical, with the exception of the last two lines (excluding the comments in pod2.yaml). Our 3 pods are designed to run on our 3 nodes, one pod per node.
 
@@ -107,7 +107,7 @@ kubectl get pods -o wide
 
 Each pod should have a unique node listed, indicating each one abided by our node selectors and is running on the requested node.
 
-#### Taint Your Nodes
+> #### Taint Your Nodes
 
 Taint your nodes with the following commands, supplying the names of your second and third nodes. Remember, your second node has the label ```label2:value2``` and your third node should have the label ```label3:value3```. You can rerun these commands as needed to recall which nodes is which: ```kubectl get nodes -l label2``` and ```kubectl get nodes -l label3```.
 
@@ -145,7 +145,7 @@ kubectl apply -f pod3.yaml
 
 As described above, pod3 should now also be in a pending state. Let's investigate both pod2 and pod3 now.
 
-#### Troubleshooting Your Pods
+> #### Troubleshooting Your Pods
 
 Your best friend in troubleshooting pods and deployments is the ```kubectl describe``` command.
 
@@ -153,7 +153,7 @@ Now, in this exercise, it would be perfectly suitable to run ```kubectl describe
 
 However, over time, and with a larger volume of pods, it'll likely make sense to find a more programmatic troubleshooting method. Let's explore a simple technique for this now, using Python's ```kubernetes``` software package.
 
-#### Troubleshooting Pending Pods with Python
+> #### Troubleshooting Pending Pods with Python
 
 From your terminal, run the following command:
 
@@ -217,7 +217,7 @@ The 'message' for both pods should be identical. At the moment, they're in the s
 
 Even though the issue for both pods is exactly the same, let's evaluate two separate methods to fix the issue and allow the Kubernetes scheduler to schedule the pods.
 
-#### Remediating Pending Pods via Tolerations
+> #### Remediating Pending Pods via Tolerations
 
 We know that pod2 cannot be scheduled to node2 because of the node taint. We also know that the labels of node2 *do* match the node selector of pod2. Now, we know this because we're in a lab exercise. Typically there'd be a few more steps involved, namely tracking down the nodes with the node taints, and validating their node labels.
 
@@ -239,3 +239,106 @@ kubectl taint nodes $node3 taint2=taint_value_2:NoSchedule-
 
 After one last ```kubectl get pods -o wide``` command, you'll find that pod3 is running on node3.
 
+Before we move onto the next exercise, let's remove the taint from node2 and delete the pods used in this exercise by running the following commands from the root directory: 
+
+```
+kubectl taint nodes $node2 taint1=taint_value_1:NoExecute-
+kubectl delete -f ./specs_taints_exercises/.
+```
+
+## Node Affinity
+
+Let's take a look at another approach to scheduling pods in Kubernetes: node affinities.
+
+Let's start by reviewing the ```without-affinity.yaml``` file in the /specs_affinity_exercises directory. You may notice that this file is pretty similar to our pod specs from the previous exercise, with a few alterations. 
+- without-affinity.yaml is a deployment spec, with 8 pod replicas. 
+- Therefore, in this example, instead of scheduling 3 pods to 3 nodes, we're looking to schedule all *8* pods to node2, since it matches the node selector label declared in the file (line 16): ```label2: value2```
+- Lastly, note that each of our 8 pods will be requesting .4 vCPU, and 1 GB of RAM.
+
+Run the following command from the /specs_affinity_exercises directory to create the deployment (that doesn't yet use node affinity):
+
+```
+kubectl apply -f without-affinity.yaml
+```
+
+Then run our handy command to retrieve information about our newly deployed pods:
+
+```
+kubectl get pods -o wide
+```
+
+How many of our pods (whose names start with without-affinity-***) are running on node2? You should see 5 of these pods running on node2, although the exact number may differ slightly depending on your cluster (more on this below). If for some reason you don't see any pending pods, increase the replica count in without-affinity.yaml and reconfigure the deployment (run ```kubectl apply -f without-affinity.yaml``` again).
+
+Let's ask our friendly Python program for more information about our the pending pods. Remember that, due to some hardcoding, it will pull information about all pending pods in the default namespace. Run the following command (with the leading ```../``` assuming you're still in the /specs_affinity_exercises directory).
+
+```python ../pull_pod_status.py```
+
+> Note: the Python program can easily be updated to pull information about pods in other states, pods in other namespaces, or pretty much any other information you'd like to pull from the cluster's
+
+For each pod in a pending state, you should see a message similar to:
+
+```
+ - Message: 0/3 nodes are available: 1 Insufficient cpu, 2 node(s) didn't match Pod's node affinity/selector. preemption: 0/3 nodes are available: 1 No preemption victims found for incoming pod, 2 Preemption is not helpful for scheduling..
+```
+
+The rationale behind the note: "2 node(s) didn't match Pod's node affinity/selector" is similar to the previous exercises - neither node1 nor node3 match our node selectors.
+
+But the part of the message unique to this exercise is: "1 Insufficient cpu," implying 1 node, node2, does not have enough cpu to run the pod in question.
+
+Recall that each of our nodes are 4x16 CPU/RAM, but we must keep in mind *allocatable resources.* Simply put, nodes in a Kubernetes cluster cannot allocate all resources (4x16 CPU/RAM in this case) solely to pods. Allocatable resources refer to the amount of CPU/RAM left for pods after system resources. The amount of allocatable CPU on your node may differ slightly based on a number of factors, which is why you may see more or less than 5 running pods.
+
+Ultimately, node2 should not be able to accommodate all pods in the deployment at this stage.
+
+Often times we're not thinking of all of this as we're writing our pod specs. We're thinking about our application and the resources that it needs. We've probably run some extensive testing on our application and know what it needs and how it performs. And perhaps we know that our application will perform better on node2 (or other nodes in the cluster matching our node selector) as we know that higher performing nodes with the latest processors are labeled as such.
+
+In most common use cases, leaving 3 of 8 pods in a pending state is not ideal. This could leave our application in an underperforming state. So what options do we have?
+
+One option is to spin up another node that matches our node selector, or replace node2 with a larger node. But maybe our operations team isn't able to accommodate these requests at the moment - let's suppose this isn't a production application where we could justify the additional compute. Let's say we're rigorously developing and testing a new application, and our software tests run in our Kubernetes cluster.
+
+We know that neither of the other two nodes are tainted, so there's no need to add a toleration to enable our pods to run on those nodes. 
+
+We can't simply add an additional node selector label. Let's assume for a moment that we tried this, and that our new (trimmed) spec looked like this:
+
+```yaml
+    spec:
+      nodeSelector:
+        label2: value2
+        label3: value3 # <-- Added label for node3
+```
+
+You're welcome to give this a try yourself as well - feel free to add this line to without-affinity.yaml and redeploy to see what happens. 
+
+In this scenario, there would have to be a node in the cluster with *both* labels in order for the Kubernetes scheduler to schedule the pod. We know that that isn't the case in our test cluster, so this isn't an option either.
+
+And lastly, simply changing out one label for another isn't an option, as we know our application runs best on nodes with the label ```label2: value2```.
+
+Node affinity is a fantastic approach I've seen a number of teams use in the past, and it accommodates this exact use case: ensuring sure all 8 pods get scheduled without making any changes to the infrastructure (and given we have insufficient infrastructure to run our application exactly how we'd like to at the moment). After all, maybe our application testing suite takes slightly longer to run on node1 and node3 because they don't have the latest generation of processors, but we're eager to get to market with our new product and we need the tests to run right away.
+
+So how can we configure our deployment to *preferably* run on node2, but run on other nodes in the cluster as needed? Node affinities provide the exact flexibility. Instead of the rigid node selectors we've used up to this point - the functionality that required pod1 to run on node1 (and so on), and required our latest deployment (without-affinity.yaml) to run on node2 - node affinities will allow us to define our preference of node labels while affording our pods the flexibility to run on other nodes if there aren't any other options.
+
+Delete the previous deployment, and deploy with-affinity.yaml - from /specs_affinity_exercises:
+
+```
+kubectl delete -f without-affinity.yaml
+kubectl apply -f with-affinity.yaml
+```
+
+One last time, let's run our favorite command:
+
+```
+kubectl get pods -o wide
+```
+
+How many pods are in a pending state now? 
+
+How many pods are running on node2 vs node1 and node3?
+
+You should see all 8 pods running, and likely 5 of them running on node2! Our application is as happy as it can be under the given circumstances - all pods in our deployment are running, and as many as possible are running on our highest performing node, node2!
+
+## Conclusion & Cleanup
+
+At your leisure, run the following command to delete the deployment:
+
+```
+kubectl apply -f with-affinity.yaml
+```

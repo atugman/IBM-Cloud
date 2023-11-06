@@ -27,10 +27,12 @@ Kubernetes Pod Scheduling
 You can use ```git clone``` to copy the full repository to your local machine. The repo contains various other lab files. After cloning, feel free to remove the excess files with a few simple commands similar to:
 
 ```
-    git clone https://github.com/atugman/IBM-Cloud.git
+git clone https://github.com/atugman/IBM-Cloud.git
 cp -r ./IBM-Cloud/Labs/Kubernetes/Pod-Scheduling-Lab .
-rm -r ./IBM-Cloud # or remove the originally cloned repo manually
+rm -r ./IBM-Cloud
 ```
+
+Or, instead of the last line above, remove the originally cloned repo for your machine manually.
 
 ## Labels and Taints
 
@@ -148,3 +150,92 @@ As described above, pod3 should now also be in a pending state. Let's investigat
 Your best friend in troubleshooting pods and deployments is the ```kubectl describe``` command.
 
 Now, in this exercise, it would be perfectly suitable to run ```kubectl describe pod pod2``` and ```kubectl describe pod pod3```, two simple commands providing us with the information that we need to understand why our pods have not been scheduled.
+
+However, over time, and with a larger volume of pods, it'll likely make sense to find a more programmatic troubleshooting method. Let's explore a simple technique for this now, using Python's ```kubernetes``` software package.
+
+#### Troubleshooting Pending Pods with Python
+
+From your terminal, run the following command:
+
+```pip install kubernetes```
+
+Take a moment to explore the contents of the ```pull_pod_status.py``` file, located in the root directory.
+
+```python
+from kubernetes import client, config
+
+def get_pending_pods():
+    try:
+        config.load_kube_config()
+
+        v1 = client.CoreV1Api()
+        response = v1.list_namespaced_pod(namespace="default", watch=False)
+        
+        for pod in response.items:
+            if pod.status.phase == "Pending":
+
+                print("\nPod:",pod.metadata.name,"\n",
+                      "- Namespace:",pod.metadata.namespace,"\n",
+                      "- Status:",pod.status.phase,"\n",
+                      "- Reason:",pod.status.conditions[0].reason,"\n",
+                      "- Message:",pod.status.conditions[0].message)
+
+    except Exception as e:
+        print("Error:", e)
+
+if __name__ == "__main__":
+    get_pending_pods()
+```
+
+The program is actually quite simple. After importing the kubernetes library, the program calls a function named get_pending_pods, that does exactly that. Our Python program loads our kubeconfig file, pulls information about our cluster, then calls the Kubernetes API of our cluster. It pulls information about all pods in the ```default``` namespace, then iterates over each pod, checking for pods in a pending state. It then prints relevant information about each pod, including some helpful troubleshooting information, to the console.
+
+Let's execute our Python program by running the following commands from our root directory. 
+
+Use ```cd ..``` to move up one level in your directory (back to the root), then run:
+
+```python pull_pod_status.py```
+
+> Note: depending on your local Python installation, it may be helpful to run ```python3 pull_pod_status.py```.
+
+> Some tips if you run into any issues in the realm of the program locating the ```kubernetes``` package:
+> - Check for any error messages from the install command
+> - Quit and relaunch your terminal
+> - Otherwise, open a local editor, such as VS Code, and make sure you're using the proper Python interpreter
+> For any further issues, as discussed previously, feel free to run ```kubectl describe pod pod2``` and ```kubectl describe pod pod3``` as an alternative to running the Python program.
+
+The output of the program should have yielded a message similar to the block below, with information on both pod2 and pod3 (I've trimmed mine only to show pod2).
+
+```
+Pod: pod2 
+ - Namespace: default 
+ - Status: Pending 
+ - Reason: Unschedulable 
+ - Message: 0/3 nodes are available: 1 node(s) didn't match Pod's node affinity/selector, 1 node(s) had untolerated taint {taint1: taint_value_1}, 1 node(s) had untolerated taint {taint2: taint_value_2}. preemption: 0/3 nodes are available: 3 Preemption is not helpful for scheduling..
+```
+
+The 'message' for both pods should be identical. At the moment, they're in the same situation: node1 does not match either pods' node selector, and the other two nodes are tainted. Neither pod tolerates either node taint.
+
+Even though the issue for both pods is exactly the same, let's evaluate two separate methods to fix the issue and allow the Kubernetes scheduler to schedule the pods.
+
+#### Remediating Pending Pods via Tolerations
+
+We know that pod2 cannot be scheduled to node2 because of the node taint. We also know that the labels of node2 *do* match the node selector of pod2. Now, we know this because we're in a lab exercise. Typically there'd be a few more steps involved, namely tracking down the nodes with the node taints, and validating their node labels.
+
+But for now, let's fix the issue via tolerations. Recall that node taints are designed to *repel* pods, which is why our pods are in a pending state. If we want our node taint to repel all pods *with the exception of* certain pods, we can add a toleration to our pod spec.
+
+Remove the comments from ```pod2.yaml```, and save the file. Take note of the toleration we've now added to the pod spec.
+
+Rerun ```kubectl apply -f pod2.yaml``` from your terminal (make sure you're back in the ```specs_taints_exercises``` folder, or supply a relative path in the command).
+
+After you see the ```pod/pod2 configured``` message, rerun ```kubectl get pods -o wide```, and pod2 should now be running on node2.
+
+Tolerations are a great way to make sure specific pods can run on our tainted nodes. Let's try one other simple approach for pod3 - let's see what happens when we remove the node taint from node3, knowing that our node labels and selectors match.
+
+Run the following command to remove the taint from node3 (be sure to include the "-" at the end).
+
+```
+kubectl taint nodes $node3 taint2=taint_value_2:NoSchedule-
+```
+
+After one last ```kubectl get pods -o wide``` command, you'll find that pod3 is running on node3.
+

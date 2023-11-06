@@ -15,4 +15,4 @@ spec:
   #- key: "taint1"
   #  operator: "Equal"
   #  value: "taint_value_1"
-  #  effect: "NoSchedule"
+  #  effect: "NoExecute"

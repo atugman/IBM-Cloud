@@ -9,12 +9,12 @@ kubectl delete -f ./specs/.
 k get nodes
 
 # taint nodes
-kubectl taint nodes <node2> taint1=taint_value_1:NoSchedule
+kubectl taint nodes <node2> taint1=taint_value_1:NoExecute
 
-kubectl taint nodes <node3> taint2=taint_value_2:NoExecute
+kubectl taint nodes <node3> taint2=taint_value_2:NoSchedule
 
 
 # remove taints
-kubectl taint nodes <node2> taint1=taint_value_1:NoSchedule-
+kubectl taint nodes <node2> taint1=taint_value_1:NoExecute-
 
-kubectl taint nodes <node3> taint2=taint_value_2:NoSchedule-
+kubectl taint nodes $node3 taint2=taint_value_2:NoSchedule-

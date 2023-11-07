@@ -20,7 +20,7 @@ spec:
         imagePullPolicy: IfNotPresent
         resources:
           requests:
-            cpu: ".4"
+            cpu: ".5"
             memory: "1Gi"
       affinity:
         nodeAffinity:

@@ -10,6 +10,7 @@ Kubernetes Pod Scheduling: Labels, Taints, and Node Affinities
   - Other namespaces could be used with minor modifications
 - Consider using a basic test cluster dedicated to these exercises
   - By design, this lab will have an impact on the scheduling of pods in the cluster
+- Basic Kubernetes knowledge is recommended
 - Basic terminal skills will be helpful, although not required
 
 ### Notes
@@ -20,12 +21,12 @@ Kubernetes Pod Scheduling: Labels, Taints, and Node Affinities
 
 - Root directory: https://github.com/atugman/IBM-Cloud/tree/main/Labs/Kubernetes/Pod-Scheduling-Lab
 - **guide.md** - lab instructions
-  - > If you're reading this in the IBM Cloud communities, you can disregard guide.md as it's a mirror image of this blog.
+    > If you're reading this in the IBM Cloud communities, you can disregard guide.md as it's a mirror image of this blog.
+- ```/terraform/main.tf``` - a simple terraform for an IKS cluster
+- ```pull_pod_status.py``` - Python program that we'll use to expedite troubleshooting
 - Pod and Deployment Manifests
   - ```/affinity_exercises``` - with-affinity.yaml, without-affinity.yaml
   - ```/taints_exercises``` - pod1.yaml, pod2.yaml, pod3.yaml
-- ```/terraform/main.tf``` - a simple terraform for an IKS cluster
-- ```pull_pod_status.py``` - Python program that we'll use to expedite troubleshooting
 
 You can use ```git clone``` to copy the full repository to your local machine. The repo contains various other lab files. After cloning, feel free to remove the excess files with a few simple commands similar to:
 
@@ -256,7 +257,7 @@ Let's take a look at another approach to scheduling pods in Kubernetes: node aff
 Let's start by reviewing the ```without-affinity.yaml``` file in the ```/affinity_exercises``` directory. You may notice that this file is pretty similar to our pod manifests from the previous exercise, with a few alterations. 
 - ```without-affinity.yaml``` is a deployment manifest, with 8 pod replicas. 
 - Therefore, in this example, instead of scheduling 3 pods to 3 nodes, we're looking to schedule all 8 pods of our deployment to node2, since it matches the node selector label declared in the pod template of our deployment spec (line 16): ```label2: value2```
-- Lastly, note that each of our 8 pods will be requesting .4 vCPU, and 1 GB of RAM.
+- Lastly, note that each of our 8 pods will be requesting .5 vCPU, and 1 GB of RAM.
 
 Let's first create this deployment using node selectors, just like the previous exercise. Run the following command from the ```/affinity_exercises``` directory to create the deployment:
 
@@ -270,7 +271,7 @@ Then run our handy command to retrieve information about our newly deployed pods
 kubectl get pods -o wide
 ```
 
-How many of our pods (whose names start with ```without-affinity-*```) are running on node2? You should see 5 of these pods running on node2, although the exact number may differ slightly depending on your cluster (more on this below). If for some reason you don't see any pending pods, increase the replica count in without-affinity.yaml and reconfigure the deployment (run ```kubectl apply -f without-affinity.yaml``` again).
+How many of our pods (whose names start with ```without-affinity-*```) are running on node2? You should see 5 or 6 of these pods running on node2, and the rest should be pending. The exact number may differ slightly depending on your cluster (more on this below). If for some reason you don't see any pending pods, check to make sure your node does in fact only have 4 CPUs.
 
 Let's ask our friendly Python program for more information about our the pending pods. Remember that, due to some hardcoding, it will pull information about all pending pods in the default namespace. Run the following command (with the leading ```../``` assuming you're still in the ```/affinity_exercises``` directory).
 
@@ -288,13 +289,11 @@ The rationale behind the note: "*2 node(s) didn't match Pod's node affinity/sele
 
 But the part of the message unique to this exercise is: "**1 Insufficient cpu**," meaning node2 does not have enough cpu to run the pod in question.
 
-Recall that each of our nodes have 4x16 CPU/RAM, but we must keep in mind *allocatable resources.* Simply put, nodes in a Kubernetes cluster cannot allocate all resources (4x16 CPU/RAM in this case) solely to pods. Allocatable resources refer to the amount of CPU/RAM left for pods after system resources. The amount of allocatable CPU on your node may differ slightly based on a number of factors, which is why you may see more or less than 5 running pods.
-
-Ultimately, node2 should not be able to accommodate all pods in the deployment at this stage.
+Recall that node2 has 4x16 CPU/RAM. On the surface, it seems like our node should be able to run all 8 pods. However, it's important to keep *allocatable resources* in mind. Simply put, nodes in a Kubernetes cluster cannot allocate all resources (4x16 CPU/RAM in this case) solely to pods. *Allocatable resources* refers to the amount of CPU/RAM left for pods after accounting for system resources. The amount of allocatable CPU on your node may differ slightly based on a number of factors, which is why you may see more or less than 6 running pods. Ultimately, node2 cannot run all pods in the deployment with its mere 4x16 CPU/RAM configuration, so you should see some pending pods.
 
 We're likely not thinking of all of this as we're writing our pod specs. We're thinking about our application and the resources it needs. We've probably run some extensive testing on our application and know what it needs and how it performs. And perhaps we know that our application will perform better on node2 (or other nodes in the cluster that also match our node selector) as higher performing nodes with the latest processors are labeled as such (in this fictitious scenario).
 
-In most common use cases, leaving 3 of 8 pods in a pending state is not ideal. This could leave our application in an underperforming state. So what options do we have?
+In most common use cases, even though our heart is in the right place (putting our application's needs first), leaving 2 out of 8 pods in a pending state is not ideal as this could leave our application in an underperforming state. So what options do we have?
 
 One option is to spin up another node that matches our node selector, or replace node2 with a larger node. But maybe our operations team isn't able to accommodate these requests at the moment - let's suppose this isn't a production application where we could justify the additional compute resources. Let's say we're rigorously developing and testing a new application, and our application and software tests run in our Kubernetes cluster.
 
@@ -338,12 +337,12 @@ How many pods are running on node2 vs node1 and node3?
 
 You should see all 8 pods running, and likely 5 of them running on node2! Our application is as happy as it can be under the given circumstances - all pods in our deployment are running, and as many as possible are running on our highest performing node, node2!
 
-## Conclusion & Cleanup
+## Lab Cleanup
 
-At your leisure, run the following command to delete the deployment:
+At your leisure, run the following command to delete the deployment from the previous section:
 
 ```
-kubectl apply -f with-affinity.yaml
+kubectl delete -f with-affinity.yaml
 ```
 
 If you used the provided terraform to create an IKS cluster, and the IKS cluster was used solely by you for this exercise, you can run the following command to destroy the cluster:
@@ -352,10 +351,38 @@ If you used the provided terraform to create an IKS cluster, and the IKS cluster
 terraform destroy
 ```
 
-If you didn't destroy your cluster and plan on keeping these 3 worker nodes around for other purposes, I'll assume you'd like to remove the meaningless labels we applied for these exercise. You can do so by running the following commands (notice the "-" at the end of each command):
+Otherwise, if you plan on keeping these 3 worker nodes around for other purposes, I'll assume you'd like to remove the meaningless labels we applied for these exercises. You can do so by running the following commands (notice the "-" at the end of each command):
 
 ```
 kubectl label nodes $node1 label1-
 kubectl label nodes $node2 label2-
 kubectl label nodes $node3 label3-
 ```
+
+## Conclusion
+
+Congratulations on completing these exercises!
+
+The idea behind this writeup was to provide you with some working knowledge of pod scheduling in Kubernetes alongside some practical, real examples of how and when different approaches could be used. My hope is that you have a better sense of the strategies and options you should consider when it comes to scheduling pods. 
+
+Below is a brief summary of some of the key points made in this guide. Keep in mind these points are merely opinions, and could certainly be adjusted under different circumstances, or for unique applications. My hope though is that they'll serve as a general rule of thumb as you're getting started in Kubernetes.
+
+- Selecting the proper node for our pods is crucial to application performance
+- Node selectors, as the name suggests, can be used to select specific nodes for our pods to run on, but can often be too restrictive. They're highly appropriate for production environments, or for pods that can only run on a highly selective set of nodes. 
+- Taints are great for repelling pods, but often get overused, and may incidentally lead to too many pending pods.
+- Node affinity is a great way to define node preferences, but not necessarily hard requirements for our pods. This approach tends to work well in dev/test settings, or for pods that can run on multiple types of nodes.
+
+There's plenty more to learn about labels, taints, tolerations, affinities and even anti-affinities (which were not covered in this guide). Kubernetes provides incredibly vast documentation, and the docs at the bottom of this page were all sources that I consulted while writing this guide. I'd highly encourage you to dig into each one further.
+
+I'll also leave you with a couple of questions that weren't covered in this guide, but that you should strive to answer in your independent studies.
+
+1. How is using ```requiredDuringSchedulingIgnoredDuringExecution``` in our pod spec different from using a node selector?
+
+2. How is tainting a node with the ```PreferNoSchedule``` option different than using the ```NoSchedule``` option in conjunction with a properly configured toleration?
+
+## References
+
+1. https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+2. https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/
+3. https://kubernetes.io/docs/tasks/configure-pod-container/assign-pods-nodes-using-node-affinity/
+4. https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/

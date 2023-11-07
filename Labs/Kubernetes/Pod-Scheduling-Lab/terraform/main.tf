@@ -7,14 +7,15 @@ terraform {
   }
 }
 
-# Configure the IBM Provider
+// Configure the IBM Provider
 provider "ibm" {
   region = "us-south"
   ibmcloud_api_key = var.api_key
 }
 
-# Run line below in local terminal, supplying IBM Cloud API key
-# export TF_VAR_api_key=your_api_key
+// Run line below in local terminal, supplying IBM Cloud API key
+// export TF_VAR_api_key=your_api_key
+
 variable "api_key" {}
 
 data "ibm_resource_group" "resource_group" {
@@ -64,7 +65,7 @@ resource "ibm_container_vpc_cluster" "cluster" {
 }
 
 // Worker Pools
-/*
+
 resource "ibm_container_vpc_worker_pool" "worker_pool_1" {
   cluster           = ibm_container_vpc_cluster.cluster.id
   worker_pool_name  = "worker_pool_1"
@@ -95,25 +96,4 @@ resource "ibm_container_vpc_worker_pool" "worker_pool_2" {
   labels = {
     label3:"value3"
   }
-}
-*/
-// Monitoring/Logging
-
-resource "ibm_resource_instance" "instance" {
-  name     = "TestMonitoring"
-  service  = "sysdig-monitor"
-  plan     = "graduated-tier"
-  location = "us-south"
-}
-
-resource "ibm_resource_key" "resourceKey" {
-  name                 = "TestKey"
-  resource_instance_id = ibm_resource_instance.instance.id
-  role                 = "Manager"
-}
-
-resource "ibm_ob_monitoring" "test2" {
-  depends_on  = [ibm_resource_key.resourceKey]
-  cluster     = ibm_container_vpc_cluster.cluster.id
-  instance_id = ibm_resource_instance.instance.guid
 }

@@ -52,9 +52,10 @@ resource "ibm_is_subnet_public_gateway_attachment" "k8s-gw-attachment" {
 resource "ibm_container_vpc_cluster" "cluster" {
   name              = "mycluster"
   vpc_id            = ibm_is_vpc.vpc1.id
-  flavor            = "bx2.4x16" # "bx2.2x8" # "u3c.2x4" <-- older gen, forces replacement
+  flavor            = "bx2.4x16"
   worker_count      = 1
   resource_group_id = data.ibm_resource_group.resource_group.id
+  image_security_enforcement = true
   zones {
     subnet_id = ibm_is_subnet.subnet1.id
     name      = "us-south-1"

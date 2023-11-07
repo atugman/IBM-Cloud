@@ -3,9 +3,18 @@ Kubernetes Pod Scheduling: Labels, Taints, and Node Affinities
 
 ## Introduction
 
-Consider the following prerequisites, although feel free to continue reading even if you aren't following along locally.
+Scheduling pods in Kubernetes can be difficult to get exactly right. The following guided exercises are designed to shed some light on the different options and constraints available to ensure your applications are running on the optimal infrastructure within your Kubernetes cluster.
+
+This guide was written on IBM Cloud Kubernetes Service (IKS), and includes a [simple terraform for IKS](https://github.com/atugman/IBM-Cloud/blob/main/Labs/Kubernetes/Pod-Scheduling-Lab/terraform/main.tf) that will spin up a cluster configured for these exercises. You'll simply need an IBM Cloud API key. Regardless of where your cluster is hosted, these guided exercises will also work with little to no modification.
+
+IBM has many resources and designated engineers to help you get started with IKS, regardless of where you are in your Kubernetes journey. My hope is that the documentation below and the resources in this lab will help you get started, and don't hesitate to reach out to your IBM account representative for additional resources and support!
+- [Tutorials Library](https://cloud.ibm.com/docs?tab=tutorials&tags=containers&page=1&pageSize=20)
+- [Getting Started with IKS](https://cloud.ibm.com/docs/containers?topic=containers-getting-started)
+
+If you plan to follow along locally, consider the following notes and prerequisites. Feel free to continue reading even if you aren't conducting the exercises.
 
 ### Considerations & Prerequisites
+
 - Kubernetes cluster with 3 worker nodes, each with 4x16 CPU/RAM
   - Other cluster configurations will work, although your precise results may differ
 - kubectl access to the Kubernetes cluster, with the ability to deploy pods into the default namespace
@@ -15,13 +24,10 @@ Consider the following prerequisites, although feel free to continue reading eve
 - Basic Kubernetes knowledge is recommended
 - Basic terminal skills will be helpful, although not required
 
-### Notes
-- This guide was written on IBM Cloud Kubernetes Service (IKS), but will work with little to no modification regardless of where your cluster is hosted
-- There's a simple terraform provided for IKS (link/directory structure below) that will spin up a cluster configured for these exercises, you'll just need an IBM Cloud API key
-
 ### File Structure
 
-- Root directory: https://github.com/atugman/IBM-Cloud/tree/main/Labs/Kubernetes/Pod-Scheduling-Lab
+- Root directory: all lab files, including the guide can be found here: https://github.com/atugman/IBM-Cloud/tree/main/Labs/Kubernetes/Pod-Scheduling-Lab
+    - You'll want to make sure you have the full directory available locally (more details below).
 - **guide.md** - lab instructions
     > If you're reading this in the IBM Cloud communities, you can disregard **guide.md** as it's a mirror image of this blog.
 - ```/terraform/main.tf``` - a simple terraform for an IKS cluster
@@ -370,7 +376,7 @@ The idea behind this writeup was to provide you with some working knowledge of p
 Below is a brief summary of some of the key points made in this guide. Keep in mind these points are merely opinions, and could certainly be adjusted under different circumstances, or for unique applications. My hope though is that they'll serve as a general rule of thumb as you're getting started in Kubernetes.
 
 - Selecting the proper node for our pods is crucial to application performance
-- Node selectors, as the name suggests, can be used to select specific nodes for our pods to run on, but can often be too restrictive. They're highly appropriate for production environments, or for pods that can only run on a highly selective set of nodes. 
+- Node selectors, as the name suggests, can be used to select specific nodes for our pods to run on, but can often be too restrictive. They're appropriate for pods that can only run on a highly selective set of nodes.
 - Taints are great for repelling pods, but often get overused, and may incidentally lead to too many pending pods. In general, they should be used sparingly on worker nodes.
 - Node affinity is a great way to define node preferences, but not necessarily hard requirements for our pods. This approach tends to work well in dev/test settings, or for pods that can run on multiple cluster nodes.
 

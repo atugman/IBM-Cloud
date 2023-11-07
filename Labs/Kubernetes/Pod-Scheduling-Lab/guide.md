@@ -11,7 +11,7 @@ IBM has many resources and designated engineers to help you get started with IKS
 - [Tutorials Library](https://cloud.ibm.com/docs?tab=tutorials&tags=containers&page=1&pageSize=20)
 - [Getting Started with IKS](https://cloud.ibm.com/docs/containers?topic=containers-getting-started)
 
-If you plan to follow along locally, consider the following notes and prerequisites. Feel free to continue reading even if you aren't conducting the exercises.
+If you plan to follow along with the exercises locally, consider the following notes and prerequisites. Feel free to continue reading even if you don't plan to directly conduct the exercises.
 
 ### Considerations & Prerequisites
 
@@ -375,10 +375,10 @@ The idea behind this writeup was to provide you with some working knowledge of p
 
 Below is a brief summary of some of the key points made in this guide. Keep in mind these points are merely opinions, and could certainly be adjusted under different circumstances, or for unique applications. My hope though is that they'll serve as a general rule of thumb as you're getting started in Kubernetes.
 
-- Selecting the proper node for our pods is crucial to application performance
+- Selecting the proper node for our pods is crucial to application performance.
 - Node selectors, as the name suggests, can be used to select specific nodes for our pods to run on, but can often be too restrictive. They're appropriate for pods that can only run on a highly selective set of nodes.
 - Taints are great for repelling pods, but often get overused, and may incidentally lead to too many pending pods. In general, they should be used sparingly on worker nodes.
-- Node affinity is a great way to define node preferences, but not necessarily hard requirements for our pods. This approach tends to work well in dev/test settings, or for pods that can run on multiple cluster nodes.
+- Node affinity is a great way to define node preferences, but not necessarily hard requirements for our pods. This approach tends to work well for pods that could run on multiple cluster nodes as needed.
 
 There's plenty more to learn about labels, taints, tolerations, affinities and even anti-affinities (which were not covered in this guide). Kubernetes provides incredibly vast documentation, and the docs at the bottom of this page were all sources that I consulted while writing this guide. I'd highly encourage you to dig into each one further.
 

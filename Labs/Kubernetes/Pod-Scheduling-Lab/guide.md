@@ -1,28 +1,31 @@
-Kubernetes Pod Scheduling
+Kubernetes Pod Scheduling: Labels, Taints, and Node Affinity
 ========
 
 ## Introduction
 
-- *Update
-- Need kubectl access to a Kubernetes cluster, with the ability to deploy pods
-- Would highly advise using a test cluster dedicated to these exercises. Even though we'll be using worker pools, this lab (by design) will have an impact on the scheduling of pods in the cluster.
-- Exercises will use the 'default' namespace
-- Your cluster should have 3 worker nodes, each with 4x16 CPU/Memory
-- Written on IBM Cloud Kubernetes Service, but should work regardless of where your cluster is hosted
-- Terraform provided for IKS
-- Intro exercise - image deploy IKS
+#### Considerations & Prerequisites
+- Kubernetes cluster with 3 worker nodes, each with 4x16 CPU/RAM
+  - Other cluster configurations will work, although your precise results may differ
+- kubectl access to the Kubernetes cluster, with the ability to deploy pods into the default namespace
+  - Other namespaces could be used with minor modifications
+- Consider using a basic test cluster dedicated to these exercises
+  - By design, this lab will have an impact on the scheduling of pods in the cluster
+- Basic terminal skills will be helpful, although not required
 
-## File Structure
+#### Notes
+- This guide was written on IBM Cloud Kubernetes Service (IKS), but should work regardless of where your cluster is hosted
+- There's a simple terraform provided for IKS (link/directory structure below) that will spin up a cluster configured for these exercises, you'll just need an IBM Cloud API key
+
+#### File Structure
 
 - Root directory: https://github.com/atugman/IBM-Cloud/tree/main/Labs/Kubernetes/Pod-Scheduling-Lab
-- guide.md - lab instructions. If you're reading this on the IBM Cloud communities page, you can disregard guide.md as it's a mirror image of this blog.
-- Pod and Deployment specs
-  - /specs_affinity_exercises
-    - with-affinity.yaml & without-affinity.yaml
-  - /specs_taints_exercises
-    - pod1.yaml, pod2.yaml, & pod3.yaml
-- /terraform/main.tf - a simple terraform for an IKS cluster
-- pull_pod_status.py - python program that we'll use to expedite troubleshooting
+- **guide.md** - lab instructions
+> If you're reading this on the IBM Cloud communities page, you can disregard guide.md as it's a mirror image of this blog.
+- Pod and Deployment Manifests
+  - ```/affinity_exercises``` - with-affinity.yaml, without-affinity.yaml
+  - ```/taints_exercises``` - pod1.yaml, pod2.yaml, pod3.yaml
+- ```/terraform/main.tf``` - a simple terraform for an IKS cluster
+- ```pull_pod_status.py``` - Python program that we'll use to expedite troubleshooting
 
 You can use ```git clone``` to copy the full repository to your local machine. The repo contains various other lab files. After cloning, feel free to remove the excess files with a few simple commands similar to:
 
@@ -36,19 +39,19 @@ Or, instead of the last line above, remove the originally cloned repo for your m
 
 ## Labels and Taints
 
-> #### Validate your Node Labels
+### Validate your Node Labels
 
 If you used the provided terraform to create your IKS cluster, your nodes will already be labeled properly for these exercises.
 
-If you did *not* use to the terraform, let's quickly label your nodes. First, use ```kubectl get nodes``` to identify the names of the 3 nodes you'll be using for these exercises. 
+If you did *not* use to the terraform, let's quickly label your nodes. First, use ```kubectl get nodes``` to identify the names of the 3 nodes you'll be using for these exercises. Then, run the following commands, supplying your node names where indicated below.
 
 ```
-kubectl label nodes <your-first-node> label1=value1
-kubectl label nodes <your-second-node> label2=value2
-kubectl label nodes <your-third-node> label3=value3
+kubectl label nodes <your-first-node-name> label1=value1
+kubectl label nodes <your-second-node-name> label2=value2
+kubectl label nodes <your-third-node-name> label3=value3
 ```
 
-If you did use the terraform, you can run the following commands to validate your labels. Each command should output a single, unique node.
+Now, whether you used the terraform or not, you can run the following commands to validate your labels. Each command should output a single, unique node. Your first node will be labeled ```label1:value1```, and so on.
 
 ```
 kubectl get nodes -l label1
@@ -57,8 +60,6 @@ kubectl get nodes -l label3
 ```
 
 Optionally, you can use ```kubectl describe node <node-name>``` to explore the labels (and many other details) of each node.
-
-To reiterate, your first node will be labeled ```label1:value1```, and so on.
 
 Let's define a few environmental variables to simplify the ensuing exercises. Run the following commands, supplying your node names:
 
@@ -80,14 +81,14 @@ For example, the output of ```echo $node1``` should match the value of the "NAME
 
 > Remember: **Make sure you're working in a test cluster,** particularly if you're a bit new to these concepts! Several of the exercises throughout this guide could have an impact on other pods in the cluster, so it's important to make sure this cluster (or *minimally* these 3 nodes) are not slated to host any important applications.
 
-> #### Deploy Pods with Node Selectors
+### Deploy Pods with Node Selectors
 
-Next, let's deploy a few pods, each with a unique node selector. Take a moment to review the contents of the 3 .yaml files in the /specs_taints_exercises directory. Each file is nearly identical, with the exception of the last two lines (excluding the comments in pod2.yaml). Our 3 pods are designed to run on our 3 nodes, one pod per node.
+Now we're ready to get started! Let's deploy a few pods, each with a unique node selector. Take a moment to review the contents of the 3 .yaml files in the /taints_exercises directory. Each file is nearly identical, with the exception of the last two lines (excluding the comments in pod2.yaml). Our 3 pods are designed to run on our 3 nodes, one pod per node.
 
 Deploy all three pods by running the following commands from your terminal. These commands assume you're currently in the root directory of the project (./Pod-Scheduling-Lab).
 
 ```
-cd specs_taints_exercises
+cd taints_exercises
 kubectl apply -f .
 ```
 
@@ -107,9 +108,9 @@ kubectl get pods -o wide
 
 Each pod should have a unique node listed, indicating each one abided by our node selectors and is running on the requested node.
 
-> #### Taint Your Nodes
+### Taint Your Nodes
 
-Taint your nodes with the following commands, supplying the names of your second and third nodes. Remember, your second node has the label ```label2:value2``` and your third node should have the label ```label3:value3```. You can rerun these commands as needed to recall which nodes is which: ```kubectl get nodes -l label2``` and ```kubectl get nodes -l label3```.
+Taint your nodes with the following commands, supplying the names of your second and third nodes. Remember, your second node has the label ```label2:value2``` and your third node should have the label ```label3:value3```. You can rerun these commands as needed to recall which nodes is which: ```kubectl get nodes -l label2``` and ```kubectl get nodes -l label3```. In short, taints are designed to *repel* pods. We'll continue discussing taints further throughout these exercises.
 
 *Taint your nodes:*
 ```
@@ -126,9 +127,9 @@ kubectl get pods -o wide
 How many pods are still running out of the original 3? Let's discuss an important distinction between the two commands that we just ran.
 
 > Notice the ```NoSchedule``` at the end of the second command (that we ran against node3). If we were to deploy pod3 now, it would not have been scheduled to node3, despite the node selector matching the node label. This is the core functionality of a taint - to repel pods, regardless of other circumstances (generally speaking). However, pod3 is *still* running on node3 despite the node taint.
-> Now, notice the ```NoExecute``` at the end of the first command (ran against node2). This option is still designed to repel pods, but also evicts any pods on the node that don't tolerate the node taint. For this reason, you should still see pod1 and pod3 running in the cluster, but not pod2, as it was evicted (and will not be repelled).
+> Now, notice the ```NoExecute``` at the end of the first command (ran against node2). This option is still designed to repel pods, but also **evicts** any pods on the node that don't tolerate the node taint. For this reason, you should still see pod1 and pod3 running in the cluster, but not pod2, as it was evicted (and will now be repelled if we try to redeploy the pod as-is).
 
-So, what are our options to schedule pods to these tainted nodes? How effectively can we use these nodes knowing they are tainted? Let's start with the first question to better understand taints.
+So, what are our options to schedule pods to these tainted nodes? How can we use these nodes effectively knowing they are tainted? Let's start with the first question to better understand taints.
 
 Since pod2 has already been evicted, let's start by redeploying it without changing any of its configurations.
 
@@ -145,7 +146,7 @@ kubectl apply -f pod3.yaml
 
 As described above, pod3 should now also be in a pending state. Let's investigate both pod2 and pod3 now.
 
-> #### Troubleshooting Your Pods
+### Troubleshooting Your Pods
 
 Your best friend in troubleshooting pods and deployments is the ```kubectl describe``` command.
 
@@ -153,9 +154,9 @@ Now, in this exercise, it would be perfectly suitable to run ```kubectl describe
 
 However, over time, and with a larger volume of pods, it'll likely make sense to find a more programmatic troubleshooting method. Let's explore a simple technique for this now, using Python's ```kubernetes``` software package.
 
-> #### Troubleshooting Pending Pods with Python
+### Troubleshooting Pending Pods with Python
 
-From your terminal, run the following command:
+From your terminal, run the following command (unless you already have the Python ```kubernetes``` package installed):
 
 ```pip install kubernetes```
 
@@ -197,13 +198,13 @@ Use ```cd ..``` to move up one level in your directory (back to the root), then 
 
 > Note: depending on your local Python installation, it may be helpful to run ```python3 pull_pod_status.py```.
 
-> Some tips if you run into any issues in the realm of the program locating the ```kubernetes``` package:
+> Some tips if you run into any issues relating to the program not locating the ```kubernetes``` package:
 > - Check for any error messages from the install command
 > - Quit and relaunch your terminal
 > - Otherwise, open a local editor, such as VS Code, and make sure you're using the proper Python interpreter
 > For any further issues, as discussed previously, feel free to run ```kubectl describe pod pod2``` and ```kubectl describe pod pod3``` as an alternative to running the Python program.
 
-The output of the program should have yielded a message similar to the block below, with information on both pod2 and pod3 (I've trimmed mine only to show pod2).
+The output of the program should have yielded a message similar to the block below, with information on both pod2 and pod3 (I've trimmed mine below only to show pod2).
 
 ```
 Pod: pod2 
@@ -217,19 +218,19 @@ The 'message' for both pods should be identical. At the moment, they're in the s
 
 Even though the issue for both pods is exactly the same, let's evaluate two separate methods to fix the issue and allow the Kubernetes scheduler to schedule the pods.
 
-> #### Remediating Pending Pods via Tolerations
+### Remediating Pending Pods via Tolerations
 
 We know that pod2 cannot be scheduled to node2 because of the node taint. We also know that the labels of node2 *do* match the node selector of pod2. Now, we know this because we're in a lab exercise. Typically there'd be a few more steps involved, namely tracking down the nodes with the node taints, and validating their node labels.
 
-But for now, let's fix the issue via tolerations. Recall that node taints are designed to *repel* pods, which is why our pods are in a pending state. If we want our node taint to repel all pods *with the exception of* certain pods, we can add a toleration to our pod spec.
+But for now, let's focus on fixing the issue via tolerations. Recall that node taints are designed to *repel* pods, which is why our pods are in a pending state. If we want our node taint to repel all pods *with the exception of* certain pods, we can add a toleration to our pod spec.
 
 Remove the comments from ```pod2.yaml```, and save the file. Take note of the toleration we've now added to the pod spec.
 
-Rerun ```kubectl apply -f pod2.yaml``` from your terminal (make sure you're back in the ```specs_taints_exercises``` folder, or supply a relative path in the command).
+Rerun ```kubectl apply -f pod2.yaml``` from your terminal (make sure you're back in the ```taints_exercises``` folder, or supply a relative path in the command).
 
 After you see the ```pod/pod2 configured``` message, rerun ```kubectl get pods -o wide```, and pod2 should now be running on node2.
 
-Tolerations are a great way to make sure specific pods can run on our tainted nodes. Let's try one other simple approach for pod3 - let's see what happens when we remove the node taint from node3, knowing that our node labels and selectors match.
+Tolerations are a great way to make sure specific pods can run on our tainted nodes. Now, for pod3, let's see what happens when we remove the node taint from node3, knowing that our node labels and selectors match.
 
 Run the following command to remove the taint from node3 (be sure to include the "-" at the end).
 
@@ -239,23 +240,25 @@ kubectl taint nodes $node3 taint2=taint_value_2:NoSchedule-
 
 After one last ```kubectl get pods -o wide``` command, you'll find that pod3 is running on node3.
 
-Before we move onto the next exercise, let's remove the taint from node2 and delete the pods used in this exercise by running the following commands from the root directory: 
+Now, before we move on, if you're wondering: "why should *removing* a taint be considered a valid 'troubleshooting' approach to enabling our pending pods to be scheduled?" then you're not crazy. If it seems a bit counterintuitive, it is. Sure, removing the node taint resolves the issue. By why taint the node in the first place then, right? Correct. I've noticed many cases with teams in the past overusing node taints actually becomes a bit more confusing and cumbersome. So my proposed "troubleshooting" technique of removing the node taint actually points to the need to rethink our pod scheduling strategy altogether. Perhaps there is a better solution for scheduling pods to the appropriate nodes! Let's explore this further in the next section.
+
+Before we move onto the next set of exercises, let's remove the taint from node2 and delete the pods used in this exercise by running the following commands from the root directory: 
 
 ```
 kubectl taint nodes $node2 taint1=taint_value_1:NoExecute-
-kubectl delete -f ./specs_taints_exercises/.
+kubectl delete -f ./taints_exercises/.
 ```
 
 ## Node Affinity
 
 Let's take a look at another approach to scheduling pods in Kubernetes: node affinities.
 
-Let's start by reviewing the ```without-affinity.yaml``` file in the /specs_affinity_exercises directory. You may notice that this file is pretty similar to our pod specs from the previous exercise, with a few alterations. 
-- without-affinity.yaml is a deployment spec, with 8 pod replicas. 
-- Therefore, in this example, instead of scheduling 3 pods to 3 nodes, we're looking to schedule all *8* pods to node2, since it matches the node selector label declared in the file (line 16): ```label2: value2```
+Let's start by reviewing the ```without-affinity.yaml``` file in the /affinity_exercises directory. You may notice that this file is pretty similar to our pod specs from the previous exercise, with a few alterations. 
+- without-affinity.yaml is a deployment manifest, with 8 pod replicas. 
+- Therefore, in this example, instead of scheduling 3 pods to 3 nodes, we're looking to schedule all *8* pods to node2, since it matches the node selector label declared in the pod template of our deployment spec (line 16): ```label2: value2```
 - Lastly, note that each of our 8 pods will be requesting .4 vCPU, and 1 GB of RAM.
 
-Run the following command from the /specs_affinity_exercises directory to create the deployment (that doesn't yet use node affinity):
+Run the following command from the ```/affinity_exercises``` directory to create the deployment (that doesn't yet use node affinity):
 
 ```
 kubectl apply -f without-affinity.yaml
@@ -267,9 +270,9 @@ Then run our handy command to retrieve information about our newly deployed pods
 kubectl get pods -o wide
 ```
 
-How many of our pods (whose names start with without-affinity-***) are running on node2? You should see 5 of these pods running on node2, although the exact number may differ slightly depending on your cluster (more on this below). If for some reason you don't see any pending pods, increase the replica count in without-affinity.yaml and reconfigure the deployment (run ```kubectl apply -f without-affinity.yaml``` again).
+How many of our pods (whose names start with ```without-affinity-***```) are running on node2? You should see 5 of these pods running on node2, although the exact number may differ slightly depending on your cluster (more on this below). If for some reason you don't see any pending pods, increase the replica count in without-affinity.yaml and reconfigure the deployment (run ```kubectl apply -f without-affinity.yaml``` again).
 
-Let's ask our friendly Python program for more information about our the pending pods. Remember that, due to some hardcoding, it will pull information about all pending pods in the default namespace. Run the following command (with the leading ```../``` assuming you're still in the /specs_affinity_exercises directory).
+Let's ask our friendly Python program for more information about our the pending pods. Remember that, due to some hardcoding, it will pull information about all pending pods in the default namespace. Run the following command (with the leading ```../``` assuming you're still in the /affinity_exercises directory).
 
 ```python ../pull_pod_status.py```
 
@@ -316,7 +319,7 @@ Node affinity is a fantastic approach I've seen a number of teams use in the pas
 
 So how can we configure our deployment to *preferably* run on node2, but run on other nodes in the cluster as needed? Node affinities provide the exact flexibility. Instead of the rigid node selectors we've used up to this point - the functionality that required pod1 to run on node1 (and so on), and required our latest deployment (without-affinity.yaml) to run on node2 - node affinities will allow us to define our preference of node labels while affording our pods the flexibility to run on other nodes if there aren't any other options.
 
-Delete the previous deployment, and deploy with-affinity.yaml - from /specs_affinity_exercises:
+Delete the previous deployment, and deploy with-affinity.yaml - from /affinity_exercises:
 
 ```
 kubectl delete -f without-affinity.yaml
@@ -341,4 +344,10 @@ At your leisure, run the following command to delete the deployment:
 
 ```
 kubectl apply -f with-affinity.yaml
+```
+
+If you used the provided terraform to create an IKS cluster, and the IKS cluster was used solely by you for this exercise, you can run the following command to destroy the cluster:
+
+```
+terraform destroy
 ```

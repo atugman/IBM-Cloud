@@ -64,7 +64,7 @@ resource "ibm_container_vpc_cluster" "cluster" {
 }
 
 // Worker Pools
-
+/*
 resource "ibm_container_vpc_worker_pool" "worker_pool_1" {
   cluster           = ibm_container_vpc_cluster.cluster.id
   worker_pool_name  = "worker_pool_1"
@@ -96,7 +96,7 @@ resource "ibm_container_vpc_worker_pool" "worker_pool_2" {
     label3:"value3"
   }
 }
-
+*/
 // Monitoring/Logging
 
 resource "ibm_resource_instance" "instance" {

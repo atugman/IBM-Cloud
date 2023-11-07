@@ -3,6 +3,8 @@ Kubernetes Pod Scheduling: Labels, Taints, and Node Affinities
 
 ## Introduction
 
+Consider the following prerequisites, although feel free to continue reading even if you aren't following along locally.
+
 ### Considerations & Prerequisites
 - Kubernetes cluster with 3 worker nodes, each with 4x16 CPU/RAM
   - Other cluster configurations will work, although your precise results may differ
@@ -21,7 +23,7 @@ Kubernetes Pod Scheduling: Labels, Taints, and Node Affinities
 
 - Root directory: https://github.com/atugman/IBM-Cloud/tree/main/Labs/Kubernetes/Pod-Scheduling-Lab
 - **guide.md** - lab instructions
-    > If you're reading this in the IBM Cloud communities, you can disregard guide.md as it's a mirror image of this blog.
+    > If you're reading this in the IBM Cloud communities, you can disregard **guide.md** as it's a mirror image of this blog.
 - ```/terraform/main.tf``` - a simple terraform for an IKS cluster
 - ```pull_pod_status.py``` - Python program that we'll use to expedite troubleshooting
 - Pod and Deployment Manifests
@@ -369,8 +371,8 @@ Below is a brief summary of some of the key points made in this guide. Keep in m
 
 - Selecting the proper node for our pods is crucial to application performance
 - Node selectors, as the name suggests, can be used to select specific nodes for our pods to run on, but can often be too restrictive. They're highly appropriate for production environments, or for pods that can only run on a highly selective set of nodes. 
-- Taints are great for repelling pods, but often get overused, and may incidentally lead to too many pending pods.
-- Node affinity is a great way to define node preferences, but not necessarily hard requirements for our pods. This approach tends to work well in dev/test settings, or for pods that can run on multiple types of nodes.
+- Taints are great for repelling pods, but often get overused, and may incidentally lead to too many pending pods. In general, they should be used sparingly on worker nodes.
+- Node affinity is a great way to define node preferences, but not necessarily hard requirements for our pods. This approach tends to work well in dev/test settings, or for pods that can run on multiple cluster nodes.
 
 There's plenty more to learn about labels, taints, tolerations, affinities and even anti-affinities (which were not covered in this guide). Kubernetes provides incredibly vast documentation, and the docs at the bottom of this page were all sources that I consulted while writing this guide. I'd highly encourage you to dig into each one further.
 

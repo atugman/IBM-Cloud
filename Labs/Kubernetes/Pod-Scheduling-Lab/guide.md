@@ -5,7 +5,7 @@ Kubernetes Pod Scheduling: Labels, Taints, and Node Affinities
 
 Scheduling pods in Kubernetes can be difficult to get exactly right. The following guided exercises are designed to shed some light on the different options and constraints available to ensure your applications are running on the optimal infrastructure within your Kubernetes cluster.
 
-This guide was written on IBM Cloud Kubernetes Service (IKS), and includes a [simple terraform for IKS](https://github.com/atugman/IBM-Cloud/blob/main/Labs/Kubernetes/Pod-Scheduling-Lab/terraform/main.tf) that will spin up a cluster configured for these exercises. You'll simply need an IBM Cloud API key. Regardless of where your cluster is hosted, these guided exercises will also work with little to no modification.
+This guide was written on IBM Cloud Kubernetes Service (IKS), and includes a [simple terraform for IKS](https://github.com/atugman/IBM-Cloud/blob/main/Labs/Kubernetes/Pod-Scheduling-Lab/terraform/main.tf) that will spin up a cluster configured for these exercises - you'll just need an IBM Cloud API key. Regardless of where your cluster is hosted, these guided exercises will also work with little to no modification.
 
 IBM has many resources and designated engineers to help you get started with IKS, regardless of where you are in your Kubernetes journey. My hope is that the documentation below and the resources in this lab will help you get started, and don't hesitate to reach out to your IBM account representative for additional resources and support!
 - [Tutorials Library](https://cloud.ibm.com/docs?tab=tutorials&tags=containers&page=1&pageSize=20)
@@ -136,6 +136,7 @@ kubectl get pods -o wide
 How many pods are still running out of the original 3? Let's discuss an important distinction between the two commands that we just ran.
 
 > Notice the ```NoSchedule``` at the end of the second command (that we ran against node3). If we were to deploy pod3 now, it would not have been scheduled to node3, despite the node selector matching the node label. This is the core functionality of a taint - to repel pods, regardless of other circumstances (generally speaking). However, pod3 is *still* running on node3 despite the node taint.
+
 > Now, notice the ```NoExecute``` at the end of the first command (ran against node2). This option is still designed to repel pods, but also **evicts** any pods on the node that don't tolerate the node taint. For this reason, you should still see pod1 and pod3 running in the cluster, but not pod2, as it was evicted (and will now be repelled if we try to redeploy the pod as-is).
 
 So, what are our options to schedule pods to these tainted nodes? How can we use these nodes effectively knowing they are tainted? Let's start with the first question to better understand taints.

@@ -5,7 +5,7 @@ Kubernetes Pod Scheduling: Labels, Taints, and Node Affinities
 
 Scheduling pods in Kubernetes can be difficult to get exactly right. The following guided exercises are designed to shed some light on the different options and constraints available to ensure your applications are running on the optimal infrastructure within your Kubernetes cluster.
 
-This guide was written on IBM Cloud Kubernetes Service (IKS), and includes a [simple terraform for IKS](https://github.com/atugman/IBM-Cloud/blob/main/Labs/Kubernetes/Pod-Scheduling-Lab/terraform/main.tf) that will spin up a cluster configured for these exercises - you'll just need an IBM Cloud API key. Regardless of where your cluster is hosted, these guided exercises will also work with little to no modification.
+This guide was written on IBM Cloud Kubernetes Service (IKS), and includes a [simple terraform for IKS](https://github.com/atugman/IBM-Cloud/blob/main/Labs/Kubernetes/Pod-Scheduling-Lab/terraform/main.tf) that will spin up a cluster configured for these exercises - you'll just need an IBM Cloud API key. Regardless of where your cluster is hosted, these guided exercises will work with little to no modification.
 
 IBM has many resources and designated engineers to help you get started with IKS, regardless of where you are in your Kubernetes journey. My hope is that the documentation below and the resources in this lab will help you get started, and don't hesitate to reach out to your IBM account representative for additional resources and support!
 - [Tutorials Library](https://cloud.ibm.com/docs?tab=tutorials&tags=containers&page=1&pageSize=20)

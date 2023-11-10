@@ -88,7 +88,7 @@ echo $node3
 
 For example, the output of ```echo $node1``` should match the value of the "NAME" listed as output of ```kubectl get nodes -l label1```, and likewise for for the second and third nodes.
 
-- Remember: <span style="color:red">*Make sure you're working in a test cluster,*</span> particularly if you're a bit new to these concepts! Several of the exercises throughout this guide could have an impact on other pods in the cluster, so it's important to make sure this cluster (or *minimally* these 3 nodes) are not slated to host any important applications.
+- **Remember: Make sure you're working in a test cluster,** particularly if you're a bit new to these concepts! Several of the exercises throughout this guide could have an impact on other pods in the cluster, so it's important to make sure this cluster (or *minimally* these 3 nodes) are not slated to host any important applications.
 
 ### Deploy Pods with Node Selectors
 
@@ -206,7 +206,7 @@ Use ```cd ..``` to move up one level in your directory (back to the root), then 
 
 ```python pull_pod_status.py```
 
-- Note: depending on your local Python installation, it may be helpful to run ```python3 pull_pod_status.py```.
+- **Note:** depending on your local Python installation, it may be helpful to run ```python3 pull_pod_status.py```.
 
 - Some tips if you run into any issues relating to the program not locating the ```kubernetes``` package:
   - Check for any error messages from the install command
@@ -286,7 +286,7 @@ Let's ask our friendly Python program for more information about our the pending
 
 ```python ../pull_pod_status.py```
 
-- Note: the Python program can easily be updated to pull information about pods in other states, pods in other namespaces, or pretty much any other information you'd like to pull from the cluster.
+- **Note:** the Python program can easily be updated to pull information about pods in other states, pods in other namespaces, or pretty much any other information you'd like to pull from the cluster.
 
 For each pod in a pending state, you should see a message similar to:
 

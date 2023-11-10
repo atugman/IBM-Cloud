@@ -29,7 +29,7 @@ If you plan to follow along with the exercises locally, consider the following n
 - Root directory: all lab files, including the guide can be found here: https://github.com/atugman/IBM-Cloud/tree/main/Labs/Kubernetes/Pod-Scheduling-Lab
     - You'll want to make sure you have the full directory available locally (more details below).
 - **guide.md** - lab instructions
-    > If you're reading this in the IBM Cloud communities, you can disregard **guide.md** as it's a mirror image of this blog.
+    - If you're reading this in the IBM Cloud communities, you can disregard **guide.md** as it's a mirror image of this blog.
 - ```/terraform/main.tf``` - a simple terraform for an IKS cluster
 - ```pull_pod_status.py``` - Python program that we'll use to expedite troubleshooting
 - Pod and Deployment Manifests
@@ -88,7 +88,7 @@ echo $node3
 
 For example, the output of ```echo $node1``` should match the value of the "NAME" listed as output of ```kubectl get nodes -l label1```, and likewise for for the second and third nodes.
 
-> Remember: **Make sure you're working in a test cluster,** particularly if you're a bit new to these concepts! Several of the exercises throughout this guide could have an impact on other pods in the cluster, so it's important to make sure this cluster (or *minimally* these 3 nodes) are not slated to host any important applications.
+- Remember: <span style="color:red">*Make sure you're working in a test cluster,*</span> particularly if you're a bit new to these concepts! Several of the exercises throughout this guide could have an impact on other pods in the cluster, so it's important to make sure this cluster (or *minimally* these 3 nodes) are not slated to host any important applications.
 
 ### Deploy Pods with Node Selectors
 
@@ -135,9 +135,9 @@ kubectl get pods -o wide
 
 How many pods are still running out of the original 3? Let's discuss an important distinction between the two commands that we just ran.
 
-> Notice the ```NoSchedule``` at the end of the second command (that we ran against node3). If we were to deploy pod3 now, it would not have been scheduled to node3, despite the node selector matching the node label. This is the core functionality of a taint - to repel pods, regardless of other circumstances (generally speaking). However, pod3 is *still* running on node3 despite the node taint.
+- Notice the ```NoSchedule``` at the end of the second command (that we ran against node3). If we were to deploy pod3 now, it would not have been scheduled to node3, despite the node selector matching the node label. This is the core functionality of a taint - to repel pods, regardless of other circumstances (generally speaking). However, pod3 is *still* running on node3 despite the node taint.
 
-> Now, notice the ```NoExecute``` at the end of the first command (ran against node2). This option is still designed to repel pods, but also **evicts** any pods on the node that don't tolerate the node taint. For this reason, you should still see pod1 and pod3 running in the cluster, but not pod2, as it was evicted (and will now be repelled if we try to redeploy the pod as-is).
+- Now, notice the ```NoExecute``` at the end of the first command (ran against node2). This option is still designed to repel pods, but also **evicts** any pods on the node that don't tolerate the node taint. For this reason, you should still see pod1 and pod3 running in the cluster, but not pod2, as it was evicted (and will now be repelled if we try to redeploy the pod as-is).
 
 So, what are our options to schedule pods to these tainted nodes? How can we use these nodes effectively knowing they are tainted? Let's start with the first question to better understand taints.
 
@@ -206,13 +206,13 @@ Use ```cd ..``` to move up one level in your directory (back to the root), then 
 
 ```python pull_pod_status.py```
 
-> Note: depending on your local Python installation, it may be helpful to run ```python3 pull_pod_status.py```.
+- Note: depending on your local Python installation, it may be helpful to run ```python3 pull_pod_status.py```.
 
-> Some tips if you run into any issues relating to the program not locating the ```kubernetes``` package:
-> - Check for any error messages from the install command
-> - Quit and relaunch your terminal
-> - Otherwise, open a local editor, such as VS Code, and make sure you're using the proper Python interpreter
-> For any further issues, as discussed previously, feel free to run ```kubectl describe pod pod2``` and ```kubectl describe pod pod3``` as an alternative to running the Python program.
+- Some tips if you run into any issues relating to the program not locating the ```kubernetes``` package:
+  - Check for any error messages from the install command
+  - Quit and relaunch your terminal
+  - Otherwise, open a local editor, such as VS Code, and make sure you're using the proper Python interpreter
+- If you experience any further issues, feel free to run ```kubectl describe pod pod2``` and ```kubectl describe pod pod3``` as an alternative to running the Python program.
 
 The output of the program should have yielded a message similar to the block below, with information on both pod2 and pod3 (I've trimmed mine below only to show pod2).
 
@@ -286,7 +286,7 @@ Let's ask our friendly Python program for more information about our the pending
 
 ```python ../pull_pod_status.py```
 
-> Note: the Python program can easily be updated to pull information about pods in other states, pods in other namespaces, or pretty much any other information you'd like to pull from the cluster.
+- Note: the Python program can easily be updated to pull information about pods in other states, pods in other namespaces, or pretty much any other information you'd like to pull from the cluster.
 
 For each pod in a pending state, you should see a message similar to:
 

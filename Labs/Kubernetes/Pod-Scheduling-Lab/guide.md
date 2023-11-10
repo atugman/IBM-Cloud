@@ -1,4 +1,4 @@
-Kubernetes Pod Scheduling: Labels, Taints, and Node Affinities
+Kubernetes Pod Scheduling: Labels, Taints, and Affinities
 ========
 
 ## Introduction

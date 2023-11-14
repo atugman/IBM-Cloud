@@ -1,4 +1,4 @@
-# Simple usage of Python Dictionaries
+# Simple Usage of Python Dictionaries
 
 Python dictionaries are a powerful data structure that you can use to look up information using key value pairs. They differ from lists and other data structures in various ways, but namely in the sense that they are not indexed numerically, but by keys.
 
@@ -19,9 +19,11 @@ After completion of this lab, you should be able to:
 
 ## Create our environment
 
-Let's start by creating a simple Python environment that we can work in.
+Let's start by creating a simple Python 'environment' that we can work in.
 
-Execute the following commands in your terminal to create our .py file:
+> 'Environment' in this case simply refers to a directory on our local machine. For managing complex environments with numerous Python packages, my preferred tool is [conda](https://anaconda.org/anaconda/conda). [venv](https://docs.python.org/3/library/venv.html) is a fantastic tool as well. For the purposes of this lab, a simple directory on our machine will suffice as our 'environment.'
+
+Execute the following commands in your terminal to create your .py file:
 
 ```bash
 mkdir dictionaries_lab && cd dictionaries_lab
@@ -40,7 +42,7 @@ Execute the following command in your terminal to ensure your python environment
 python dictionaries.py
 ```
 
-If working properly, you should see a simple "hello world!" message printed to the console of your IDE.
+If working properly, you should see a simple "hello world!" message printed to the terminal of your IDE.
 
 ## Create the Data Structure
 

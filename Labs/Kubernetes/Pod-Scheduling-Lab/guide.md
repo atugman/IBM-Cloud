@@ -13,7 +13,7 @@ IBM has many resources and designated engineers to help you get started with IKS
 
 If you plan to follow along with the exercises locally, consider the following notes and prerequisites. Feel free to continue reading even if you don't plan to directly conduct the exercises.
 
-### Considerations & Prerequisites
+#### Considerations & Prerequisites
 
 - Kubernetes cluster with 3 worker nodes, each with 4x16 CPU/RAM
   - Other cluster configurations will work, although your precise results may differ
@@ -21,10 +21,11 @@ If you plan to follow along with the exercises locally, consider the following n
   - Other namespaces could be used with minor modifications
 - Consider using a basic test cluster dedicated to these exercises
   - By design, this lab will have an impact on the scheduling of pods in the cluster
+- IKS users should install the [IBM Cloud CLI and Kubernetes extension](https://cloud.ibm.com/docs/containers?topic=containers-cli-install)
 - Basic Kubernetes knowledge is recommended
 - Basic terminal skills will be helpful, although not required
 
-### File Structure
+#### File Structure
 
 - Root directory: all lab files, including the guide can be found here: https://github.com/atugman/IBM-Cloud/tree/main/Labs/Kubernetes/Pod-Scheduling-Lab
     - You'll want to make sure you have the full directory available locally (more details below).
@@ -50,6 +51,15 @@ Or, instead of the last line above, remove the originally cloned repo for your m
 
 ### Validate your Node Labels
 
+Before you get started, make sure you're logged into your cluster in your local terminal. 
+
+For IKS, this can be accomplished by simply: 
+
+- Logging into the IBM Cloud CLI
+- Running ```ibmcloud ks cluster config --cluster your_cluster_id```
+
+Run ```kubectl config current-context``` to make sure you're working in the correct cluster.
+
 If you used the provided terraform to create your IKS cluster, your nodes will already be labeled properly for these exercises.
 
 If you did *not* use to the terraform, let's quickly label your nodes. First, use ```kubectl get nodes``` to identify the names of the 3 nodes you'll be using for these exercises. Then, run the following commands, supplying your node names where indicated below.
@@ -60,7 +70,7 @@ kubectl label nodes <your-second-node-name> label2=value2
 kubectl label nodes <your-third-node-name> label3=value3
 ```
 
-Now, whether you used the terraform or not, you can run the following commands to validate your labels. Each command should output a single, unique node. Your first node will be labeled ```label1:value1```, and so on.
+Now, whether you used the terraform or not, you can run the following three commands (individually) to validate your labels. Each command should output a single, unique node. Your first node will be labeled ```label1:value1```, and so on.
 
 ```
 kubectl get nodes -l label1
@@ -123,8 +133,8 @@ Taint your nodes with the following commands, supplying the names of your second
 
 *Taint your nodes:*
 ```
-kubectl taint nodes <node2> taint1=taint_value_1:NoExecute
-kubectl taint nodes <node3> taint2=taint_value_2:NoSchedule
+kubectl taint nodes $node2 taint1=taint_value_1:NoExecute
+kubectl taint nodes $node3 taint2=taint_value_2:NoSchedule
 ```
 
 Rerun the following command, and observe the output:
@@ -135,7 +145,7 @@ kubectl get pods -o wide
 
 How many pods are still running out of the original 3? Let's discuss an important distinction between the two commands that we just ran.
 
-- Notice the ```NoSchedule``` at the end of the second command (that we ran against node3). If we were to deploy pod3 now, it would not have been scheduled to node3, despite the node selector matching the node label. This is the core functionality of a taint - to repel pods, regardless of other circumstances (generally speaking). However, pod3 is *still* running on node3 despite the node taint.
+- Notice the ```NoSchedule``` at the end of the second command (that we ran against node3). If we were to deploy pod3 now, it would not have been scheduled to node3, despite the node selector matching the node label. This is the core functionality of a taint - to repel pods, regardless of other circumstances (generally speaking). However, pod3 is *still* running on node3 for the moment, despite the node taint.
 
 - Now, notice the ```NoExecute``` at the end of the first command (ran against node2). This option is still designed to repel pods, but also **evicts** any pods on the node that don't tolerate the node taint. For this reason, you should still see pod1 and pod3 running in the cluster, but not pod2, as it was evicted (and will now be repelled if we try to redeploy the pod as-is).
 
@@ -154,7 +164,11 @@ kubectl delete -f pod3.yaml
 kubectl apply -f pod3.yaml
 ```
 
-As described above, pod3 should now also be in a pending state. Let's investigate both pod2 and pod3 now.
+Rerun the following command once again (we'll be running this quite a few times):
+
+```kubectl get pods -o wide```
+
+As described above, pod2 and pod3 should now both be in a pending state. Let's investigate both pod2 and pod3 now.
 
 ### Troubleshooting Your Pods
 
@@ -317,7 +331,7 @@ We can't simply add an additional node selector label. Let's assume for a moment
         label3: value3 # <-- Added label for node3
 ```
 
-You're welcome to give this a try yourself as well - feel free to add this line to ```without-affinity.yaml``` and redeploy to observe the results.
+You're welcome to give this a try yourself as well - feel free to add this line to ```without-affinity.yaml``` and redeploy to observe the results. If you do, be sure to remove the line afterwards, and (re)redeploy (with the original file contents) before proceeding.
 
 In this scenario, there would have to be a node in the cluster with *both* labels in order for the Kubernetes scheduler to schedule the pod. We know that that isn't the case in our test cluster, so this isn't an option either.
 
@@ -354,7 +368,7 @@ At your leisure, run the following command to delete the deployment from the pre
 kubectl delete -f with-affinity.yaml
 ```
 
-If you used the provided terraform to create an IKS cluster, and the IKS cluster was used solely by you for this exercise, you can run the following command to destroy the cluster:
+If you used the provided terraform to create an IKS cluster, and the IKS cluster was used solely by you for this exercise, you can run the following command from the ```./terraform``` directory to destroy the cluster:
 
 ```
 terraform destroy

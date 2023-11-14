@@ -182,7 +182,9 @@ However, over time, and with a larger volume of pods, it'll likely make sense to
 
 From your terminal, run the following command (unless you already have the Python ```kubernetes``` package installed):
 
-```pip install kubernetes```
+```
+pip install kubernetes
+```
 
 Take a moment to explore the contents of the ```pull_pod_status.py``` file, located in the root directory.
 
@@ -218,7 +220,9 @@ Let's execute our Python program by running the following commands from our root
 
 Use ```cd ..``` to move up one level in your directory (back to the root), then run:
 
-```python pull_pod_status.py```
+```
+python pull_pod_status.py
+```
 
 - **Note:** depending on your local Python installation, it may be helpful to run ```python3 pull_pod_status.py```.
 
@@ -262,7 +266,7 @@ Run the following command to remove the taint from node3 (be sure to include the
 kubectl taint nodes $node3 taint2=taint_value_2:NoSchedule-
 ```
 
-After one last ```kubectl get pods -o wide``` command, you'll find that pod3 is running on node3.
+After running one last ```kubectl get pods -o wide``` command, you'll find that pod3 is running on node3.
 
 Now, before we move on, if you're wondering: "why should *removing* a taint be considered a valid 'troubleshooting' approach to enabling our pending pods to be scheduled?" then you're not crazy. If it seems a bit counterintuitive, it is. Sure, removing the node taint resolves the issue. By why taint the node in the first place then, right? Correct. I've noticed many cases with teams in the past overusing node taints actually becomes a bit more confusing and cumbersome. So my proposed "troubleshooting" technique of removing the node taint actually points to the need to rethink our pod scheduling strategy altogether. Perhaps there is a better solution for scheduling pods to the appropriate nodes! Let's explore this further in the next section.
 
@@ -368,7 +372,7 @@ At your leisure, run the following command to delete the deployment from the pre
 kubectl delete -f with-affinity.yaml
 ```
 
-If you used the provided terraform to create an IKS cluster, and the IKS cluster was used solely by you for this exercise, you can run the following command from the ```./terraform``` directory to destroy the cluster:
+If you used the provided terraform to create an IKS cluster, and the IKS cluster was used solely by you for this exercise, you can run the following command from the ```./terraform``` directory to destroy the cluster (and enter "yes" when prompted):
 
 ```
 terraform destroy

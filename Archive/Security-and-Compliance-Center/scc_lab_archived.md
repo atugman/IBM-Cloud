@@ -1,4 +1,4 @@
-*Please note this is an archived lab (stored here for reference) and is not actively maintained. The exercises in this document were performed in an IBM Cloud account with preexisting resources for participants.*
+> #### *Please note this is an archived lab (stored here for reference) and is not actively maintained (various screenshots are outdated). The exercises in this document were performed in an IBM Cloud account with preexisting resources for participants.*
 
 # IBM Cloud Innovation Summit: Security & Compliance Center - Hands-on Lab
 <!-- ------------------------ -->
